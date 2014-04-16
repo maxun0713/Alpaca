@@ -15,6 +15,5 @@ int main(int argc, char** argv)
 	LogEngine engine;
 	engine.Initialize(argv[0], "/home/marv");
 
-
 	return 0;
 }
