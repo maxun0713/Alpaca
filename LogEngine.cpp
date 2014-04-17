@@ -15,12 +15,11 @@ using namespace std;
 
 void SignalHandler(const char* data, int size)
 {
-	LOG(ERROR) << string(data, size) << endl;
+	LOG_ERROR(string(data, size));
 }
 
 LogEngine::LogEngine() {
 	// TODO Auto-generated constructor stub
-
 }
 
 LogEngine::~LogEngine() {

@@ -13,9 +13,9 @@ public:
 	IModule();
 	virtual ~IModule();
 
-	int Create() = 0 ;
-	int Initialize(void* param) = 0;
-	int Release() = 0;
+	virtual int Create() = 0 ;
+	virtual int Initialize(void* param) = 0;
+	virtual int Release() = 0;
 };
 
 #endif /* IMODULE_H_ */

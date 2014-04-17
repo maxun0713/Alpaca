@@ -10,6 +10,15 @@
 
 #include <glog/logging.h>
 
+
+
+#define LOG_INFO(what)     LOG(INFO)  << what
+#define LOG_WARNING(what)  LOG(WARN)  << what
+#define LOG_ERROR(what)    LOG(ERROR) << what
+#define LOG_FATAL(what)    LOG(FATAL) << what
+#define LOG_PERROR(what)   PLOG()     << what
+
+
 class LogEngine {
 public:
 	LogEngine();
