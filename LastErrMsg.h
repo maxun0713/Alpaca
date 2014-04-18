@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include <string>
+#include <iostream>
 using namespace std;
 
 class LastErrMsg
@@ -38,6 +39,7 @@ public:
 	do { \
 		lasterrmsg.Clear(); \
 		lasterrmsg._sstream << msg; \
+		cout << lasterrmsg.What() << endl; \
 	}while(0); \
 
 
