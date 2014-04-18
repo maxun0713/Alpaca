@@ -9,12 +9,14 @@
 #define IOHANDLER_H_
 
 #include <sys/socket.h>
+
+struct event_base;
 class IOHandler {
 public:
-	IOHandler();
-	virtual ~IOHandler();
+	IOHandler(){};
+	virtual ~IOHandler(){};
 
-	int virtual OnAcceptConn(int sock, struct sockaddr *addr, int len)=0;
+	int virtual OnAcceptConn(struct event_base* base, int sock, struct sockaddr *addr, int len)=0;
 	int virtual OnAcceptErr(int sock)=0;
 	int virtual OnRecvData()=0;
 	int virtual OnConnClosed()=0;

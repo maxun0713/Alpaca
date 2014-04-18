@@ -10,9 +10,13 @@
 using namespace std;
 
 #include "EventEngine.h"
+#include "SessionHandler.h"
 int main() {
 	EventEngine engine;
+	SessionHandler handler;
 
 	engine.Initialize(NULL, 0);
+	engine.CreateListener("127.0.0.1", 123, &handler);
+	engine.Activate();
 	return 0;
 }
