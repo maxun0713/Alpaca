@@ -16,7 +16,7 @@ int main() {
 	SessionHandler handler;
 
 	engine.Initialize(NULL, 0);
-	engine.CreateListener("127.0.0.1", 123, &handler);
+	engine.CreateListener("127.0.0.1", 123, (IOHandler*)&handler);
 	engine.Activate();
 	return 0;
 }

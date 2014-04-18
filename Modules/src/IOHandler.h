@@ -1,7 +1,7 @@
 /*
  * IOHandler.h
  *
- *  Created on: 2014年4月18日
+ *  Created on: 2014骞�4���18���
  *      Author: marv
  */
 
@@ -10,13 +10,13 @@
 
 #include <sys/socket.h>
 
-struct event_base;
+struct event_listener;
 class IOHandler {
 public:
 	IOHandler(){};
 	virtual ~IOHandler(){};
 
-	int virtual OnAcceptConn(struct event_base* base, int sock, struct sockaddr *addr, int len)=0;
+	int virtual OnAcceptConn(struct evconnlistener* event_listener, int sock, struct sockaddr *addr, int len)=0;
 	int virtual OnAcceptErr(int sock)=0;
 	int virtual OnRecvData()=0;
 	int virtual OnConnClosed()=0;
