@@ -17,10 +17,11 @@ public:
 	virtual ~SessionHandler();
 
 	int virtual OnAcceptConn(struct evconnlistener* event_listener, int sock, struct sockaddr *addr, int len);
-	int virtual OnAcceptErr(int sock);
-	int virtual OnRecvData();
-	int virtual OnConnClosed();
-	int virtual OnSendData();
+	int virtual OnAcceptErr(struct evconnlistener* event_listener,int sock);
+	int virtual OnRecvData(struct bufferevent* bev);
+	int virtual OnConnClosed(struct bufferevent* bev);
+	int virtual OnSendData(struct bufferevent* bev);
+	int virtual OnEvent(struct bufferevent* bev, short event);
 };
 
 #endif /* SESSIONHANDLER_H_ */
