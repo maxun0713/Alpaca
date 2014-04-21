@@ -6,10 +6,9 @@
  */
 
 #include "ServerFrame.h"
-
-ServerFrame::ServerFrame() {
+#include "DefaultConfig.h"
+ServerFrame::ServerFrame():_modManager(FRAME_SERVICE_PATH) {
 	// TODO Auto-generated constructor stub
-
 }
 
 ServerFrame::~ServerFrame() {
@@ -22,9 +21,9 @@ int ServerFrame::OnTimer(void* arg)
 }
 
 
-int ServerFrame::OnProc(void* arg)
+SERVER_STATUS ServerFrame::OnProc(void* arg)
 {
-	return 0;
+	return SERVER_STATUS_PAUSED;
 }
 
 

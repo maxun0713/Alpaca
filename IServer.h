@@ -9,7 +9,7 @@
 #define ISERVER_H_
 
 #include "IModule.h"
-
+#include "CoreTypes.h"
 class IServer :public IModule{
 public:
 	IServer(){};
@@ -20,7 +20,9 @@ public:
 	virtual int Release() = 0;
 
 	int virtual OnTimer(void* arg) = 0;
-	int virtual OnProc(void* arg)= 0;
+	SERVER_STATUS virtual OnProc(void* arg)= 0;
+protected:
+	SERVER_STATUS _status;
 };
 
 #endif /* ISERVER_H_ */

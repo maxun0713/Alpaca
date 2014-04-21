@@ -5,8 +5,8 @@
  *      Author: marv
  */
 
-#ifndef MODULELOADER_H_
-#define MODULELOADER_H_
+#ifndef MODULEMANAGER_H_
+#define MODULEMANAGER_H_
 
 #include "IModule.h"
 #include <string>
@@ -16,10 +16,10 @@ using namespace std;
 
 typedef map<string, IModule*> MODULE_MAP;
 //used to manage modules of a same directory
-class ModuleLoader {
+class ModuleManager {
 public:
-	ModuleLoader(const char* dir);
-	virtual ~ModuleLoader();
+	ModuleManager(const char* dir);
+	virtual ~ModuleManager();
 
 	int LoadModule(const char* module_name);
 	IModule* GetModule(const char* module_name);
@@ -28,4 +28,4 @@ private:
 	MODULE_MAP	modMap;
 };
 
-#endif /* MODULELOADER_H_ */
+#endif /* MODULEMANAGER_H_ */
