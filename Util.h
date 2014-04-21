@@ -15,6 +15,8 @@
 #include <sys/file.h>
 #include <signal.h>
 
+FILE* LOCKFILE = NULL;
+
 int SavePid(const char* app)
 {
 	T_ERROR_VAL(app)
@@ -53,23 +55,23 @@ int SetSystemParms()
 
 int Lock(const char* app)
 {
-	FILE* fp = NULL;
 	T_ERROR_VAL(app)
 
 	char tmp[64];
 	snprintf(tmp, sizeof(tmp), "%s.lock", app);
-	fp = fopen(tmp, "w");
+	LOCKFILE = fopen(tmp, "w");
 
-	T_ERROR_VAL(fp)
-	T_ERROR_VAL(flock(fp->_fileno, LOCK_EX | LOCK_NB) == 0)
+	T_ERROR_VAL(LOCKFILE)
+	T_ERROR_VAL(flock(LOCKFILE->_fileno, LOCK_EX | LOCK_NB) == 0)
 
-	fclose(fp);
 	return 0;
 }
 
 
 int UnLock(const char* app)
 {
+	if(LOCKFILE) fclose(LOCKFILE);
+
 	char tmp[64];
 	snprintf(tmp, sizeof(tmp), "%s.lock", app);
 	return unlink(tmp);

@@ -28,6 +28,7 @@ int _Run(const char* app, int daemon)
 	if(daemon)  T_ERROR_VAL(Deamonlize(0, 1) == 0)
 
 	UnLock(app);
+
 	return 0;
 }
 
@@ -35,7 +36,6 @@ int main(int argc, char** argv)
 {
 	LogEngine engine;
 	engine.Initialize(argv[0], "/home/marv");
-
 
 	return _Run(argv[0], 0);
 }
