@@ -27,7 +27,7 @@ int _Run(const char* app, int daemon)
 	T_ERROR_VAL(SetSystemParms() == 0)
 	if(daemon)  T_ERROR_VAL(Deamonlize(0, 1) == 0)
 
-	UnLock();
+	UnLock(app);
 	return 0;
 }
 

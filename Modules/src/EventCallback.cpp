@@ -7,6 +7,7 @@
 
 #include "EventCallback.h"
 #include "IOHandler.h"
+#include <event2/bufferevent.h>
 
 
 void
@@ -33,16 +34,28 @@ bufevent_read_cb(struct bufferevent* bev, void* ctx)
 	if(handler) handler->OnRecvData(bev);
 }
 
+// temporary useless
 void
 bufevent_write_cb(struct bufferevent* bev, void* ctx)
 {
-	IOHandler* handler = static_cast<IOHandler*>(ctx);
-	if(handler) handler->OnSendData(bev);
+//	IOHandler* handler = static_cast<IOHandler*>(ctx);
+//	if(handler) handler->OnSendData(bev);
 }
 
 void
 bufevent_event_cb(struct bufferevent* bev, short event, void* ctx)
 {
 	IOHandler* handler = static_cast<IOHandler*>(ctx);
-	//if(handler) handler->OnRecvData(bev, event);
+
+	if(handler)
+	{
+		if(event & BEV_EVENT_EOF)
+		{
+			handler->OnConnClosed(bev);
+		}
+		else if(event & BEV_EVENT_ERROR)
+		{
+			handler->OnEventErr(bev);
+		}
+	}
 }

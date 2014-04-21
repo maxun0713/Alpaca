@@ -20,8 +20,7 @@ public:
 	int virtual OnAcceptErr(struct evconnlistener* event_listener, int sock)=0;
 	int virtual OnRecvData(struct bufferevent* bev)=0;
 	int virtual OnConnClosed(struct bufferevent* bev)=0;
-	int virtual OnSendData(struct bufferevent* bev)=0;
-	int virtual OnEvent(struct bufferevent* bev, short event)=0;
+	int virtual OnEventErr(struct bufferevent* bev)=0;
 };
 
 #endif /* IOHANDLER_H_ */
