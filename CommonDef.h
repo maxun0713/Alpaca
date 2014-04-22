@@ -8,23 +8,27 @@
 #ifndef COMMONDEF_H_
 #define COMMONDEF_H_
 
-#include <glog/logging.h>
+#include "LogEngine.h"
 
-#ifndef RELEASE
+
 #define T_ASSERT(cond, opt) if(!(cond)) \
 		{\
 			LOG_ERROR(#cond) ;  \
 			opt; \
 		}
+#define T_ASSERT_WITH_ERR_INFO(cond, opt) if(!(cond)) \
+		{\
+			PLOG(ERROR) << (#cond) ;  \
+			opt; \
+		}
 #define T_ERROR_VAL(cond) T_ASSERT(cond, return -1)
 #define T_ERROR_PTR(cond) T_ASSERT(cond, return NULL)
 #define T_ERROR_VOID(cond) T_ASSERT(cond, return)
+#define T_ERROR_VAL_WITH_ERR_INFO(cond)  T_ASSERT_WITH_ERR_INFO(cond, return -1)
+#define T_ERROR_PTR_WITH_ERR_INFO(cond)  T_ASSERT_WITH_ERR_INFO(cond, return NULL)
+#define T_ERROR_VOID_WITH_ERR_INFO(cond)  T_ASSERT_WITH_ERR_INFO(cond, return )
 
-#else
-#define T_ERROR_VAL(cond)
-#define T_ERROR_PTR(cond)
-#define T_ERROR_VOID(cond)
-#endif
+
 
 
 

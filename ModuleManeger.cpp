@@ -19,12 +19,12 @@ ModuleManager::~ModuleManager() {
 
 int ModuleManager::LoadModule(const char* module_name)
 {
-
+	return 0;
 
 }
 
 
 IModule* ModuleManager(const char* module_name)
 {
-
+	return 0;
 }

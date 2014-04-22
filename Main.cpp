@@ -34,7 +34,7 @@ int _Run(const char* app, int daemon)
 	LOG_INFO(app << "is about to run");
 	SERVER_STATUS status;
 	do{
-		servFrame->OnTimer(NULL);
+		servFrame->OnTimer();
 
 		status = servFrame->OnProc(NULL);
 	}while(status != SERVER_STATUS_SHUTDOWN);

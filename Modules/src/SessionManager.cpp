@@ -18,6 +18,11 @@
 #include "LogEngine.h"
 #include "EventCallback.h"
 
+#define SIMPLE_BEV_CHECK if(!bev) {\
+	LOG_ERROR("bufferevent null error");\
+	return -1;\
+}
+
 SessionManager::SessionManager() {
 	// TODO Auto-generated constructor stub
 
@@ -37,11 +42,14 @@ SessionManager::~SessionManager() {
 
 
 int SessionManager::SendData(struct bufferevent* bev, char* data, int len){
+	SIMPLE_BEV_CHECK
 	return bufferevent_write(bev, data, len);
 }
 
 int SessionManager::AddClientSession(int fd, struct bufferevent* bev, struct sockaddr *addr, int len)
 {
+	SIMPLE_BEV_CHECK
+
 	CLIENT_SESSION_MAP_ITER iter = _sessionMap.find(fd);
 	if(iter == _sessionMap.end())
 	{
@@ -94,6 +102,7 @@ int SessionManager::OnAcceptConn(struct evconnlistener* event_listener,
 	struct event_base* base = evconnlistener_get_base(event_listener);
 	struct bufferevent *bev = bufferevent_socket_new(
 			base, sock, BEV_OPT_CLOSE_ON_FREE);
+	SIMPLE_BEV_CHECK
 
 	//not need to set write callback
 	bufferevent_setcb(bev, bufevent_read_cb, NULL,
@@ -121,6 +130,7 @@ int SessionManager::OnAcceptErr(struct evconnlistener* event_listener,
 
 int SessionManager::OnRecvData(struct bufferevent* bev)
 {
+	SIMPLE_BEV_CHECK
 	struct evbuffer* input = bufferevent_get_input(bev);
 	char buf[1024];
 	int n;
@@ -142,12 +152,11 @@ int SessionManager::OnConnClosed(struct bufferevent* bev)
 
 int SessionManager::OnEventErr(struct bufferevent* bev)
 {
-	if(bev)
-	{
-		int fd = bufferevent_getfd(bev);
-		LOG_ERROR("Got a error on socket(:" << fd << ") " << EVUTIL_SOCKET_ERROR());
-		return RemoveClientSession(fd);
-	}
+	SIMPLE_BEV_CHECK
+
+	int fd = bufferevent_getfd(bev);
+	LOG_ERROR("Got a error on socket(:" << fd << ") " << EVUTIL_SOCKET_ERROR());
+	return RemoveClientSession(fd);
 
 	return -1;
 }

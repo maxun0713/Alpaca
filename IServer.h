@@ -10,16 +10,17 @@
 
 #include "IModule.h"
 #include "CoreTypes.h"
+#include <stdint.h>
 class IServer :public IModule{
 public:
-	IServer(){};
+	IServer():_status(SERVER_STATUS_SHUTDOWN){};
 	virtual ~IServer(){};
 
 	virtual int Initialize(void* arg, int arglen) = 0;
 	virtual int Activate() = 0;
 	virtual int Release() = 0;
 
-	int virtual OnTimer(void* arg) = 0;
+	uint64_t virtual OnTimer() = 0;
 	SERVER_STATUS virtual OnProc(void* arg)= 0;
 protected:
 	SERVER_STATUS _status;

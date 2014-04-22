@@ -15,7 +15,7 @@ ServerFrame::~ServerFrame() {
 	// TODO Auto-generated destructor stub
 }
 
-int ServerFrame::OnTimer(void* arg)
+uint64_t ServerFrame::OnTimer()
 {
 	return 0;
 }

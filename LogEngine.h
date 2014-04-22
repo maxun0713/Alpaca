@@ -16,7 +16,7 @@
 #define LOG_WARNING(what)  LOG(WARN)  << what
 #define LOG_ERROR(what)    LOG(ERROR) << what
 #define LOG_FATAL(what)    LOG(FATAL) << what
-#define LOG_PERROR(what)   PLOG()     << what
+#define LOG_PERROR(what)   PLOG(ERROR) << what
 
 
 class LogEngine {

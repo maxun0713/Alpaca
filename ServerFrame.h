@@ -15,7 +15,7 @@ public:
 	ServerFrame();
 	virtual ~ServerFrame();
 
-	int virtual OnTimer(void* arg);
+	uint64_t virtual OnTimer();
 	SERVER_STATUS virtual OnProc(void* arg);
 
 	virtual int Initialize(void* arg, int arglen) ;
