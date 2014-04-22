@@ -46,39 +46,57 @@ int TimerModule::AddTimer(ITimer* timer) {
 }
 
 uint64_t TimerModule::OnTimer() {
-	int finish = 0;
 	uint64_t now,diff;
 	struct timeval current;
+	bool finish = false;
 
 	T_ERROR_VAL_WITH_ERR_INFO(gettimeofday(&current, NULL) == 0)
 	now = current.tv_sec * 1000  + current.tv_usec / 1000;
 	diff = now - _timeCache;
 	_timeCache = now;
 
-	TIMER_STORAGE_ITER iter = _storage.begin();
-	TIMER_GROUP group;
-//	ITimer* timer;
-	for(; iter != _storage.end() && !finish ; iter++)
+	while(!finish)
 	{
-		if(iter->first > diff)
-		{
-			return iter->first;
-		}
-
-//		group = _storage.equal_range(iter->first);
-//		for(timer=group.first; timer!=group.second; timer++)
-//		if(iter->second)
-//		{
-//			iter->second->Proc();
-//		}
-//		else
-//		{
-//			LOG_ERROR("timer null exception");
-//		}
+		finish = _ProcTimers(diff);
 	}
 
+	if(!_storage.empty())
+	{
+		return _storage.begin()->first;
+	}
 
-	return 0;
+	return DEFAULT_TIMER_CYCLE;
+}
+
+bool TimerModule:: _ProcTimers(uint64_t delta)
+{
+	TIMER_STORAGE_ITER iter,tmp;
+	TIMER_GROUP group;
+
+	iter = _storage.begin();
+	for(; iter != _storage.end() ; iter++)
+	{
+		if(iter->first > delta)
+		{
+			return true;  //no timer callback to invoke
+		}
+
+		group = _storage.equal_range(iter->first);
+		for(tmp=group.first; tmp!=group.second; tmp++)
+		{
+			if(tmp->second)
+			{
+				tmp->second->Proc();
+				if(tmp->second->GetType() & TIMER_TYPE_ONCE)
+				{
+					_storage.erase(tmp); //iterator invalid, quit this round
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 

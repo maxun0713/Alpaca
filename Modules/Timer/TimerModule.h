@@ -15,6 +15,8 @@ using namespace std;
 
 namespace Alpaca {
 
+#define DEFAULT_TIMER_CYCLE 1000
+
 class TimerModule: public IModule{
 public:
 	TimerModule();
@@ -26,11 +28,13 @@ public:
 	virtual int Initialize(void* arg, int arglen) ;
 	virtual int Activate() ;
 	virtual int Release() ;
+private:
 
+	bool    _ProcTimers(uint64_t delta);
 private:
 	typedef multimap<uint64_t, ITimer* > TIMER_STORAGE;
 	typedef multimap<uint64_t, ITimer* >::iterator TIMER_STORAGE_ITER;
-	typedef pair<ITimer*, ITimer*> TIMER_GROUP;
+	typedef pair<TIMER_STORAGE_ITER, TIMER_STORAGE_ITER> TIMER_GROUP;
 	TIMER_STORAGE  _storage;
 	uint64_t       _timeCache;
 };

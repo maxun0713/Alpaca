@@ -28,6 +28,10 @@ public:
 		return _timeout;
 	}
 
+	short GetType() const {
+		return _type;
+	}
+
 private:
 	void* _data;
 	uint64_t _timeout;
