@@ -11,6 +11,7 @@
 #include "IModule.h"
 #include "ITimer.h"
 #include <map>
+#include <set>
 using namespace std;
 
 namespace Alpaca {
@@ -25,6 +26,8 @@ public:
 	int      AddTimer(ITimer* timer);
 	uint64_t OnTimer();
 
+	int      DelTime(int timeid);
+
 	virtual int Initialize(void* arg, int arglen) ;
 	virtual int Activate() ;
 	virtual int Release() ;
@@ -32,10 +35,14 @@ private:
 
 	bool    _ProcTimers(uint64_t delta);
 private:
-	typedef multimap<uint64_t, ITimer* > TIMER_STORAGE;
-	typedef multimap<uint64_t, ITimer* >::iterator TIMER_STORAGE_ITER;
-	typedef pair<TIMER_STORAGE_ITER, TIMER_STORAGE_ITER> TIMER_GROUP;
+	typedef map<uint64_t, map<int, ITimer*> > TIMER_STORAGE;
+	typedef map<int , ITimer* >TIMER_GROUP;
+	typedef map<uint64_t, map<int, ITimer*> >::iterator TIMER_GROUP_ITERATOR;
+	typedef map<int, ITimer*>::iterator TIMER_ITERATOR;
 	TIMER_STORAGE  _storage;
+	typedef map<int, uint64_t>::iterator TIMER_SLOT_ITERATOR;
+	map<int, uint64_t>	   _timerSlot;
+	int            _timerIDCounter;
 	uint64_t       _timeCache;
 };
 
