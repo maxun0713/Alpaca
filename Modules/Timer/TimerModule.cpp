@@ -72,10 +72,28 @@ int TimerModule::AddTimer(ITimer* timer, bool newly) {
 }
 
 
-int  TimerModule::DelTime(int timerid)
+int  TimerModule::DelTimer(int timerid)
 {
-//	TIMER_SLOT_ITERATOR iter = _timerSlot.find(timerid);
+	TIMER_SLOT_ITERATOR iter = _timerSlot.find(timerid);
+	if(iter == _timerSlot.end())
+	{
+		SET_ERR_MSG(_lastErrMsg, "no timer found id: " << timerid);
+		return -1;
+	}
+	_timerSlot.erase(timerid);
 
+	uint64_t timeout = iter->second;
+	TIMER_GROUP_ITERATOR groupIter = _storage.find(timeout);
+	if(groupIter != _storage.end())
+	{
+		groupIter->second.erase(timerid);
+		return 0;
+	}
+	else
+	{
+		SET_ERR_MSG(_lastErrMsg, "no timer slot found id: " << timerid << ", timeout: " << timeout);
+		return -1;
+	}
 
 	return -1;
 }
@@ -128,6 +146,7 @@ bool TimerModule:: _ProcTimers()
 				}
 				else
 				{
+					DelTimer(tmp->GetTimerID());
 					tmp->Destroy();
 				}
 			}

@@ -27,7 +27,7 @@ public:
 	int      AddTimer(ITimer* timer, bool newly = true);
 	uint64_t OnTimer();
 
-	int      DelTime(int timeid);
+	int      DelTimer(int timeid);
 
 	virtual int Initialize(void* arg, int arglen) ;
 	virtual int Activate() ;

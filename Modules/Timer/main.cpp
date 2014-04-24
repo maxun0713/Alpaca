@@ -21,10 +21,10 @@ int main()
 	ITimer* timer  = new TestTimer(NULL, mod.GetTimeCache() + 300, 3000);
 	uint64_t gap;
 
-	int x = mod.AddTimer(timer);
+	mod.AddTimer(timer);
 	while(1)
 	{
-		gap = mod.OnTimer() - mod.GetTimeCache();
+		mod.OnTimer();
 	}
 
 
