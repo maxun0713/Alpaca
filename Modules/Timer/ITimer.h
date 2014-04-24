@@ -12,13 +12,10 @@
 
 namespace Alpaca {
 
-#define TIMER_TYPE_ONCE  1 << 0
-#define TIMER_TYPE_REP   1 << 2
-
 class ITimer {
 public:
-	ITimer(void* data, uint64_t timeout,short type)
-		:_data(data),_timeout(timeout),_type(type),_id(0){};
+	ITimer(void* data, uint64_t timeout, uint64_t cycle)
+		:_data(data),_timeout(timeout),_cycle(cycle),_id(0){};
 	virtual ~ITimer(){};
 
 	void virtual Proc() = 0;
@@ -28,8 +25,12 @@ public:
 		return _timeout;
 	}
 
-	short GetType() const {
-		return _type;
+	void ProceedTimeout(){
+		_timeout += _cycle;
+	}
+
+	uint64_t GetCycle() const{
+		return _cycle;
 	}
 
 	void SetTimerId(int id){
@@ -43,7 +44,7 @@ public:
 private:
 	void* _data;
 	uint64_t _timeout;
-	short _type;
+	uint64_t _cycle;
 	int   _id;
 };
 

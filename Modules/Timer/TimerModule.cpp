@@ -20,6 +20,12 @@ TimerModule::~TimerModule() {
 	// TODO Auto-generated destructor stub
 }
 
+
+uint64_t TimerModule::GetTimeCache() const
+{
+	return _timeCache;
+}
+
 int TimerModule::Initialize(void* arg, int arglen) {
 	struct timeval current;
 
@@ -37,14 +43,14 @@ int TimerModule::Release() {
 	return 0;
 }
 
-int TimerModule::AddTimer(ITimer* timer) {
-
-	if(!timer | (timer->GetTimeout() <= 0) ) return -1;
+int TimerModule::AddTimer(ITimer* timer, bool newly) {
+	if(!timer ) return -1;
 
 	uint64_t timeout = timer->GetTimeout();
 	TIMER_GROUP_ITERATOR iter = _storage.find(timeout);
+	int idCounter = _timerIDCounter;
 
-	if(iter)
+	if(iter != _storage.end())
 	{
 		iter->second.insert(make_pair(timeout, timer));
 	}
@@ -55,97 +61,81 @@ int TimerModule::AddTimer(ITimer* timer) {
 		_storage.insert(make_pair(timeout, group) );
 	}
 
-	timer->SetTimerId(_timerIDCounter);
-	_timerSlot.insert(make_pair(_timerIDCounter, timeout));
-	return _timerIDCounter++;
+	if(newly)
+	{
+		timer->SetTimerId(idCounter);
+		_timerSlot.insert(make_pair(idCounter, timeout));
+		_timerIDCounter ++;
+	}
+
+	return idCounter;
 }
 
 
 int  TimerModule::DelTime(int timerid)
 {
-	TIMER_SLOT_ITERATOR iter = _timerSlot.find(timerid);
-//	uint64_t timeout;
-//	if( iter == _timerSlot.end())
-//	{
-//		SET_ERR_MSG(_lastErrMsg, "invalid timer id" << timerid);
-//		return -1;
-//	}
+//	TIMER_SLOT_ITERATOR iter = _timerSlot.find(timerid);
 
-
-//	TIMER_GROUP group = _storage.equal_range()
-//	TIMER_ITERATOR   timerIter;
 
 	return -1;
 }
 
 uint64_t TimerModule::OnTimer() {
-	uint64_t now,diff;
 	struct timeval current;
 	bool finish = false;
 
 	T_ERROR_VAL_WITH_ERR_INFO(gettimeofday(&current, NULL) == 0)
-	now = current.tv_sec * 1000  + current.tv_usec / 1000;
-	diff = now - _timeCache;
-	_timeCache = now;
+	_timeCache = current.tv_sec * 1000  + current.tv_usec / 1000;
 
 	while(!finish)
 	{
-		finish = _ProcTimers(diff);
+		finish = _ProcTimers();
 	}
 
 	if(!_storage.empty())
 	{
-		return _storage.begin()->first;
+		return _storage.begin()->first - _timeCache;
 	}
 
-	return DEFAULT_TIMER_CYCLE;
+	return _timeCache;
 }
 
-bool TimerModule:: _ProcTimers(uint64_t delta)
+bool TimerModule:: _ProcTimers()
 {
 	TIMER_GROUP_ITERATOR groupIter;
-//	TIMER_GROUP group;
 	TIMER_ITERATOR   timerIter;
-//	uint64_t hint = 0;
 
 	groupIter = _storage.begin();
-	for(; _storage != _storage.end() ; groupIter++)
+	if(!_storage.empty())
 	{
-		if(groupIter->first > delta)
+		if(groupIter->first > _timeCache)
 		{
 			return true;  //no timer callback to invoke
 		}
 
+		TIMER_GROUP& group = groupIter->second;
+		timerIter = group.begin();
+		for(; timerIter !=group.end(); timerIter++)
+		{
+			ITimer* tmp = timerIter->second;
+			if(tmp)
+			{
+				tmp->Proc();
+				if(tmp->GetCycle())
+				{
+					tmp->ProceedTimeout();
+					AddTimer(timerIter->second, false);
+				}
+				else
+				{
+					tmp->Destroy();
+				}
+			}
+		}
 
-		TIMER_GROUP& group = *(groupIter->second);
-
-		//group = _storage.equal_range(groupIter->first);
-//		timerIter = group.begin();
-//		for(; timerIter !=group.end(); timerIter++)
-//		{
-//			if(timerIter->second)
-//			{
-//				timerIter->second->Proc();
-//				if(timerIter->second->GetType() & TIMER_TYPE_ONCE)
-//				{
-////					hint = timerIter->second->GetTimeout();
-//					_timerSlot.erase(timerIter->second->GetTimerID());
-//					group.erase(timerIter); //iterator invalid, quit this round
-//					return false;
-//				}
-//			}
-//		}
+		_storage.erase(groupIter);
+		return false;
 	}
-
-// just keep the slot
-//	if(hint)
-//	{
-//		groupIter = _storage.find(hint);
-//		if(groupIter->second.empty())
-//		{
-//
-//		}
-//	}
 
 	return true;
 }

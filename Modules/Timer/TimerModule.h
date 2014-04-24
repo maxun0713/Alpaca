@@ -23,7 +23,8 @@ public:
 	TimerModule();
 	virtual ~TimerModule();
 
-	int      AddTimer(ITimer* timer);
+	uint64_t GetTimeCache() const;
+	int      AddTimer(ITimer* timer, bool newly = true);
 	uint64_t OnTimer();
 
 	int      DelTime(int timeid);
@@ -33,11 +34,11 @@ public:
 	virtual int Release() ;
 private:
 
-	bool    _ProcTimers(uint64_t delta);
+	bool    _ProcTimers();
 private:
 	typedef map<uint64_t, map<int, ITimer*> > TIMER_STORAGE;
-	typedef map<int , ITimer* >TIMER_GROUP;
 	typedef map<uint64_t, map<int, ITimer*> >::iterator TIMER_GROUP_ITERATOR;
+	typedef map<int , ITimer* >TIMER_GROUP;
 	typedef map<int, ITimer*>::iterator TIMER_ITERATOR;
 	TIMER_STORAGE  _storage;
 	typedef map<int, uint64_t>::iterator TIMER_SLOT_ITERATOR;

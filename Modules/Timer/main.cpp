@@ -10,19 +10,23 @@
 
 #include <map>
 #include <iostream>
+#include "TestTimer.h"
+#include "TimerModule.h"
 using namespace std;
-
+using namespace Alpaca;
 int main()
 {
+	TimerModule mod;
+	mod.Initialize(NULL, 0);
+	ITimer* timer  = new TestTimer(NULL, mod.GetTimeCache() + 300, 3000);
+	uint64_t gap;
 
-    multimap<int, int> ms;
-    ms.insert(multimap<int, int>::value_type(1,1));
-	ms.insert(multimap<int, int>::value_type(100,1));
-	ms.insert(multimap<int, int>::value_type(100,1));
-	// 打印数据
-//	iend = ms.end();
-//	for (i=ms.begin(); i!=iend; ++i)
-//		cout << *i << ' ';
-	cout << endl;
+	int x = mod.AddTimer(timer);
+	while(1)
+	{
+		gap = mod.OnTimer() - mod.GetTimeCache();
+	}
+
+
 	return 0;
 }
