@@ -31,7 +31,7 @@ int _Run(const char* app, int daemon)
 	T_ERROR_VAL(servFrame->Initialize(NULL, 0) == 0)
 	T_ERROR_VAL(servFrame->Activate() == 0)
 
-	LOG_INFO(app << "is about to run");
+	LOG_INFO(app << " is about to run");
 	SERVER_STATUS status;
 	do{
 		servFrame->OnTimer();

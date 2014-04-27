@@ -10,6 +10,8 @@
 
 #include "IServer.h"
 #include "ModuleManager.h"
+#include "EventEngine.h"
+#include "SessionManager.h"
 class ServerFrame:public IServer {
 public:
 	ServerFrame();
@@ -23,6 +25,8 @@ public:
 	virtual int Release();
 private:
 	ModuleManager  _modManager;
+	EventEngine    _engine;
+	SessionManager _mgr;
 };
 
 #endif /* SERVERFRAME_H_ */
