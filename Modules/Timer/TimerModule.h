@@ -25,7 +25,7 @@ public:
 
 	uint64_t GetTimeCache() const;
 	int      AddTimer(ITimer* timer, bool newly = true);
-	uint64_t OnTimer();
+	uint64_t Schedule();
 
 	int      DelTimer(int timeid);
 
@@ -35,6 +35,7 @@ public:
 private:
 
 	bool    _ProcTimers();
+	int     _UpdateTimeCache();
 private:
 	typedef map<uint64_t, map<int, ITimer*> > TIMER_STORAGE;
 	typedef map<uint64_t, map<int, ITimer*> >::iterator TIMER_GROUP_ITERATOR;

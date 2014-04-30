@@ -157,6 +157,4 @@ int SessionManager::OnEventErr(struct bufferevent* bev)
 	int fd = bufferevent_getfd(bev);
 	LOG_ERROR("Got a error on socket(:" << fd << ") " << EVUTIL_SOCKET_ERROR());
 	return RemoveClientSession(fd);
-
-	return -1;
 }

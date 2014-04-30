@@ -9,23 +9,32 @@
 #define MODULEMANAGER_H_
 
 #include "IModule.h"
-#include <string>
 #include <map>
+#include <string>
 
 using namespace std;
 
-typedef map<string, IModule*> MODULE_MAP;
-//used to manage modules of a same directory
+typedef IModule* (*exportFunc)(void);
+#define DIR_MAX_LENGTH 128
+#define MAX_MODULE_NAME 128
+#define EXPORT_FUNC_SYMBOL "ExportModule"
+
 class ModuleManager {
 public:
-	ModuleManager(const char* dir);
+	ModuleManager();
 	virtual ~ModuleManager();
 
-	int LoadModule(const char* module_name);
-	IModule* GetModule(const char* module_name);
+	int Initialize(const char* mod_dir);
+
+	IModule* LoadModule(const char* mod_name);
 private:
-	string _modDir;
-	MODULE_MAP	modMap;
+	IModule* _Query(const char* mod_name);
+	IModule* _TryOpen(const char* mod_name);
+private:
+	char _dir[DIR_MAX_LENGTH];
+	typedef map<string, IModule*> MODULE_MAP;
+	typedef MODULE_MAP::iterator MODULE_ITER;
+	MODULE_MAP	_moduleMap;
 };
 
 #endif /* MODULEMANAGER_H_ */

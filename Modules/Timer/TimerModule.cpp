@@ -6,8 +6,9 @@
  */
 
 #include "TimerModule.h"
-#include "CommonDef.h"
 #include <sys/time.h>
+#include <errno.h>
+#include <string.h>
 
 namespace Alpaca {
 
@@ -26,13 +27,21 @@ uint64_t TimerModule::GetTimeCache() const
 	return _timeCache;
 }
 
-int TimerModule::Initialize(void* arg, int arglen) {
+
+int TimerModule::_UpdateTimeCache(){
 	struct timeval current;
+	if(gettimeofday(&current, NULL) )
+	{
+		SET_ERR_MSG(_lastErrMsg, " update time cache failed" << strerror(errno))
+		return -1;
+	}
 
-	T_ERROR_VAL_WITH_ERR_INFO(gettimeofday(&current, NULL) == 0)
 	_timeCache = current.tv_sec * 1000  + current.tv_usec / 1000;
-
 	return 0;
+}
+
+int TimerModule::Initialize(void* arg, int arglen) {
+	return _UpdateTimeCache();
 }
 
 int TimerModule::Activate() {
@@ -80,7 +89,7 @@ int  TimerModule::DelTimer(int timerid)
 		SET_ERR_MSG(_lastErrMsg, "no timer found id: " << timerid);
 		return -1;
 	}
-	_timerSlot.erase(timerid);
+	_timerSlot.erase(iter);
 
 	uint64_t timeout = iter->second;
 	TIMER_GROUP_ITERATOR groupIter = _storage.find(timeout);
@@ -98,12 +107,10 @@ int  TimerModule::DelTimer(int timerid)
 	return -1;
 }
 
-uint64_t TimerModule::OnTimer() {
-	struct timeval current;
+uint64_t TimerModule::Schedule() {
 	bool finish = false;
 
-	T_ERROR_VAL_WITH_ERR_INFO(gettimeofday(&current, NULL) == 0)
-	_timeCache = current.tv_sec * 1000  + current.tv_usec / 1000;
+	if(_UpdateTimeCache())  return -1;
 
 	while(!finish)
 	{

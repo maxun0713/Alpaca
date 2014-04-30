@@ -7,7 +7,7 @@
 
 #include "ServerFrame.h"
 #include "DefaultConfig.h"
-ServerFrame::ServerFrame():_modManager(FRAME_SERVICE_PATH) {
+ServerFrame::ServerFrame(){
 	// TODO Auto-generated constructor stub
 }
 

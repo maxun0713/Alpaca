@@ -6,25 +6,72 @@
  */
 
 #include "ModuleManager.h"
+#include "CommonDef.h"
+#include <dlfcn.h>
+#include <string.h>
+#include <stdio.h>
 
-ModuleManager::ModuleManager(const char* dir) {
-	// TODO Auto-generated constructor stub
-	_modDir = dir ;
+ModuleManager::ModuleManager() {
+	memset(_dir, 0, DIR_MAX_LENGTH);
 }
 
 ModuleManager::~ModuleManager() {
 	// TODO Auto-generated destructor stub
 }
 
+int ModuleManager::Initialize(const char* mod_dir) {
+	T_ERROR_VAL(mod_dir)
 
-int ModuleManager::LoadModule(const char* module_name)
-{
+	strncpy(_dir, mod_dir, DIR_MAX_LENGTH);
 	return 0;
-
 }
 
 
-IModule* ModuleManager(const char* module_name)
+IModule* ModuleManager::LoadModule(const char* module_name)
 {
-	return 0;
+	T_ERROR_PTR(module_name)
+
+	IModule* mod = _Query(module_name);
+	if(mod == NULL)
+	{
+		return _TryOpen(module_name);
+	}
+
+	return mod;
+}
+
+
+IModule* ModuleManager::_Query(const char* mod_name) {
+	T_ERROR_PTR(mod_name)
+
+	MODULE_ITER iter = _moduleMap.find(mod_name);
+	if(iter != _moduleMap.end())
+	{
+		return iter->second;
+	}
+
+	return NULL;
+}
+
+IModule* ModuleManager::_TryOpen(const char* mod_name) {
+	T_ERROR_PTR(mod_name)
+
+	void* handle;
+	exportFunc inst;
+	IModule* mod;
+	char tmp[MAX_MODULE_NAME];
+	snprintf("%s/%s", MAX_MODULE_NAME, (char*)_dir,
+			(char*)mod_name );
+
+	handle = dlopen(tmp, RTLD_NOW | RTLD_GLOBAL);
+	T_ERROR_PTR_WITH_DL_ERR_INFO(handle)
+
+	inst = (exportFunc)dlsym(handle, EXPORT_FUNC_SYMBOL);
+	T_ERROR_PTR_WITH_DL_ERR_INFO(inst)
+
+	mod = inst();
+
+	_moduleMap.insert(make_pair(mod_name, mod) );
+
+	return NULL;
 }

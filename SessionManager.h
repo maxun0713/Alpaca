@@ -31,9 +31,6 @@ struct ClientSession
 	}
 };
 
-typedef struct ClientSession CLIENT_SESSION;
-typedef map<int, CLIENT_SESSION*> CLIENT_SESSION_MAP;
-typedef CLIENT_SESSION_MAP::iterator CLIENT_SESSION_MAP_ITER;
 class SessionManager: public IOHandler{
 public:
 	SessionManager();
@@ -51,6 +48,9 @@ public:
 	int virtual SendData(struct bufferevent* bev, char* data, int len);
 
 private:
+	typedef struct ClientSession CLIENT_SESSION;
+	typedef map<int, CLIENT_SESSION*> CLIENT_SESSION_MAP;
+	typedef CLIENT_SESSION_MAP::iterator CLIENT_SESSION_MAP_ITER;
 	CLIENT_SESSION_MAP   _sessionMap;
 };
 
