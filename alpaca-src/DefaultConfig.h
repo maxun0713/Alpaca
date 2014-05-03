@@ -9,7 +9,7 @@
 #define DEFAULTCONFIG_H_
 
 
-#define FRAME_SERVICE_PATH "./service"
+#define FRAME_SERVICE_PATH "/home/marv/Alpaca/services"
 
 
 #endif /* DEFAULTCONFIG_H_ */

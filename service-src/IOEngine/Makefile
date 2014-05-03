@@ -1,14 +1,13 @@
 
 
-
 CXX = g++
 # debug
 ifdef RELEASE
-CXXFLAGS =  -g  -Iinclude -O3
-CXXLFLAGS =  -g -Wall  -lprotobuf -levent -lglog -ldl
+CXXFLAGS =  -g  -I../../include -I../../alpaca-src -IInc -O3 -fPIC
+CXXLFLAGS =  -g -Wall  -lprotobuf -levent -lglog -ldl -rdynamic
 else
-CXXFLAGS =  -g  -Iinclude -O0
-CXXLFLAGS =  -g -Wall  -lprotobuf  -levent -lglog -ldl
+CXXFLAGS =  -g  -I../../include -I../../alpaca-src  -IInc -O0 -fPIC
+CXXLFLAGS =  -g -Wall  -lprotobuf  -levent -lglog -ldl -rdynamic
 endif
 
 OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
@@ -17,12 +16,9 @@ DEPS = $(OBJS:%.o=%.d)
 
 
 SHARED := -fPIC --shared
-MODULES = Modules
-SERVICES = services
-IO_ENGINE_OBJS = $(patsubst $(MODULES)/IOEngine/%.cpp, \
-	$(MODULES)/IOEngine/%.o,$(wildcard $(MODULES)/IOEngine/*.cpp))
+TARGET_DIR = ../../services
 
-ALL_TARGETS = Alpaca
+ALL_TARGETS = ../../services/IOEngine.so
 
 all: $(ALL_TARGETS)
 
@@ -34,10 +30,7 @@ $(OBJS): %.o: %.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 $(ALL_TARGETS): $(OBJS) $(DEPS)
-	$(CXX) $(OBJS) -o  $@ $(CXXLFLAGS) 
-
-$(IO_ENGINE):
-	$(CXX) 
+	$(CXX) $(SHARED) $(OBJS) -o  $@ $(CXXLFLAGS) 
 	
 clean:
 	@rm -rf $(OBJS) $(ALL_TARGETS) $(DEPS)

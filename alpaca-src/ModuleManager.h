@@ -11,6 +11,7 @@
 #include "IModule.h"
 #include <map>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -19,12 +20,15 @@ typedef IModule* (*exportFunc)(void);
 #define MAX_MODULE_NAME 128
 #define EXPORT_FUNC_SYMBOL "ExportModule"
 
-class ModuleManager {
+
+class ModuleManager:public IModule {
 public:
 	ModuleManager();
 	virtual ~ModuleManager();
 
-	int Initialize(const char* mod_dir);
+	virtual int Initialize(void* mod_dir, int arglen);
+	virtual int Activate() ;
+	virtual int Release() ;
 
 	IModule* LoadModule(const char* mod_name);
 private:
@@ -35,6 +39,9 @@ private:
 	typedef map<string, IModule*> MODULE_MAP;
 	typedef MODULE_MAP::iterator MODULE_ITER;
 	MODULE_MAP	_moduleMap;
+	typedef vector<void*> HANDLER_STORAGE;
+	typedef HANDLER_STORAGE::iterator HANDLE_ITER;
+	HANDLER_STORAGE  _handlerStorage;
 };
 
 #endif /* MODULEMANAGER_H_ */

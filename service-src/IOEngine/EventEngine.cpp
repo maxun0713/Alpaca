@@ -18,7 +18,7 @@
 
 
 
-EventEngine::EventEngine():_evlistener(NULL), _evbase(NULL) {
+EventEngine::EventEngine():_manager(NULL),_evlistener(NULL), _evbase(NULL) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -54,6 +54,7 @@ int EventEngine::Initialize(void* arg, int arglen)
 
 	event_config_free(config);
 
+	_manager = new SessionManager();
 	return 0;
 }
 
@@ -71,7 +72,7 @@ int EventEngine::CreateListener(const char* ip, short port, IOHandler* iohandler
 		return -1;
 	}
 
-	if(!iohandler) iohandler = &_manager;
+	if(!iohandler) iohandler = _manager;
 
 	_evlistener = evconnlistener_new_bind(_evbase,
 			accept_conn_cb, iohandler, LEV_OPT_CLOSE_ON_FREE|LEV_OPT_REUSEABLE, 1024, (struct sockaddr*)&sockaddr, socklen);

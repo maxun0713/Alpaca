@@ -5,8 +5,10 @@
  *      Author: marv
  */
 
-#include <Modules/src/SessionManager.h>
+#include "SessionManager.h"
 #include "LogEngine.h"
+#include "LogEngine.h"
+#include "EventCallback.h"
 #include <time.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -15,8 +17,6 @@
 #include <event2/buffer.h>
 #include <event2/util.h>
 #include <errno.h>
-#include "LogEngine.h"
-#include "EventCallback.h"
 
 #define SIMPLE_BEV_CHECK if(!bev) {\
 	LOG_ERROR("bufferevent null error");\
@@ -157,6 +157,4 @@ int SessionManager::OnEventErr(struct bufferevent* bev)
 	int fd = bufferevent_getfd(bev);
 	LOG_ERROR("Got a error on socket(:" << fd << ") " << EVUTIL_SOCKET_ERROR());
 	return RemoveClientSession(fd);
-
-	return -1;
 }

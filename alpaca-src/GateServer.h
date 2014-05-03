@@ -1,21 +1,21 @@
 /*
- * ServerFrame.h
+ * GateServer.h
  *
- *  Created on: 2014年4月21日
+ *  Created on: 2014年5月3日
  *      Author: marv
  */
 
-#ifndef SERVERFRAME_H_
-#define SERVERFRAME_H_
+#ifndef GATESERVER_H_
+#define GATESERVER_H_
 
 #include "IServer.h"
 #include "ModuleManager.h"
-#include "EventEngine.h"
-#include "SessionManager.h"
-class ServerFrame:public IServer {
+
+class EventEngine;
+class GateServer:public IServer {
 public:
-	ServerFrame();
-	virtual ~ServerFrame();
+	GateServer();
+	virtual ~GateServer();
 
 	uint64_t virtual OnTimer();
 	SERVER_STATUS virtual OnProc(void* arg);
@@ -25,8 +25,7 @@ public:
 	virtual int Release();
 private:
 	ModuleManager  _modManager;
-	EventEngine    _engine;
-	SessionManager _mgr;
+	EventEngine*    _engine;
 };
 
-#endif /* SERVERFRAME_H_ */
+#endif /* GATESERVER_H_ */

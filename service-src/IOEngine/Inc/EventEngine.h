@@ -28,7 +28,7 @@ public:
 	virtual int CreateListener(const char* ip, short port, IOHandler* iohandler);
 
 private:
-	SessionManager   		_manager;
+	IOHandler*   		    _manager;
 	struct evconnlistener*  _evlistener;
 	struct event_base*		_evbase;
 

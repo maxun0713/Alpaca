@@ -1,0 +1,5 @@
+
+message  TestMsg
+{
+    optional int32 dumb = 1;
+}

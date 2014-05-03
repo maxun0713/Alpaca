@@ -7,7 +7,8 @@
 
 #include "LogEngine.h"
 #include "Util.h"
-#include "ServerFrame.h"
+#include "GateServer.h"
+#include "CommonDef.h"
 #include <iostream>
 
 using namespace std;
@@ -27,11 +28,12 @@ int _Run(const char* app, int daemon)
 	T_ERROR_VAL(SetSystemParms() == 0)
 	if(daemon)  T_ERROR_VAL(Deamonlize(0, 1) == 0)
 
-	ServerFrame* servFrame = new ServerFrame();
+	IServer* servFrame = new GateServer();
 	T_ERROR_VAL(servFrame->Initialize(NULL, 0) == 0)
 	T_ERROR_VAL(servFrame->Activate() == 0)
 
 	LOG_INFO(app << " is about to run");
+
 	SERVER_STATUS status;
 	do{
 		servFrame->OnTimer();
