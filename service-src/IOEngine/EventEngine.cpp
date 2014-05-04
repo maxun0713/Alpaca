@@ -7,6 +7,7 @@
 
 #include "EventEngine.h"
 #include "EventCallback.h"
+#include "SessionManager.h"
 #include <stdio.h>
 #include <string.h>
 #include <event2/event.h>

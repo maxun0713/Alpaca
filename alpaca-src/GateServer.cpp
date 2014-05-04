@@ -7,8 +7,7 @@
 
 #include "GateServer.h"
 #include "DefaultConfig.h"
-#include "IOEngine/Inc/Exporter.h"
-#include "IOEngine/Inc/EventEngine.h"
+#include "IOEngine/Inc/IEventEngine.h"
 #include "CommonDef.h"
 
 GateServer::GateServer():_engine(NULL) {
@@ -32,7 +31,7 @@ SERVER_STATUS GateServer::OnProc(void* arg) {
 int GateServer::Initialize(void* arg, int arglen) {
 	T_ERROR_VAL(_modManager.Initialize((void*)FRAME_SERVICE_PATH,
 			strlen(FRAME_SERVICE_PATH)) == 0)
-	_engine = (EventEngine*)_modManager.LoadModule("IOEngine");
+	_engine = (IEventEngine*)_modManager.LoadModule("IOEngine");
 	T_ERROR_VAL(_engine);
 	_engine->Initialize(NULL, 0);
 	_engine->CreateListener("127.0.0.1", 27017, NULL);

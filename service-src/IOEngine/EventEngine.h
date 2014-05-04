@@ -9,14 +9,12 @@
 #define EVENTENGINE_H_
 
 #include "IModule.h"
-#include "IOHandler.h"
-#include "SessionManager.h"
-#include <string>
-
+#include "IEventEngine.h"
 
 struct evconnlistener;
 struct event_base;
-class EventEngine : public IModule{
+class IOHandler;
+class EventEngine : public IEventEngine{
 public:
 	EventEngine();
 	virtual ~EventEngine();

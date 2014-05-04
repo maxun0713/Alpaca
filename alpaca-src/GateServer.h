@@ -11,7 +11,7 @@
 #include "IServer.h"
 #include "ModuleManager.h"
 
-class EventEngine;
+class IEventEngine;
 class GateServer:public IServer {
 public:
 	GateServer();
@@ -25,7 +25,7 @@ public:
 	virtual int Release();
 private:
 	ModuleManager  _modManager;
-	EventEngine*    _engine;
+	IEventEngine*    _engine;
 };
 
 #endif /* GATESERVER_H_ */
