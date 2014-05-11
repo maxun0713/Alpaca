@@ -23,7 +23,7 @@ public:
     Node();
     virtual ~Node();
 
-    virtual int    Initialize(const NodeInitParam& params) = 0;
+    virtual int Initialize(const NodeInitParam& params) = 0;
 
     const char* What();
 protected:

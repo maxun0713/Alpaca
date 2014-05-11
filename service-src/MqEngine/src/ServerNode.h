@@ -9,6 +9,7 @@
 #define SERVERNODE_H_
 
 #include "Node.h"
+#include <zmq.h>
 
 class ServerNode: public Node
 {
@@ -17,6 +18,10 @@ public:
     virtual ~ServerNode();
 
     int    Initialize(const NodeInitParam& params);
+
+    int    Recv(char* peerIDBuf, int& peerIDBufLen, void* buf, int& bufLen);
+
+    int    Send(const char* peerID, int peerIDLen, void* data, int dataLen);
 };
 
 #endif /* SERVERNODE_H_ */
