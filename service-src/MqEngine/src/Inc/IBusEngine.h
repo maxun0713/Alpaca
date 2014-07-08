@@ -8,6 +8,7 @@
 #ifndef IBUSENGINE_H_
 #define IBUSENGINE_H_
 
+#include "IModule.h"
 #include <stdio.h>
 
 
@@ -35,14 +36,17 @@ namespace bus
 	};
 
 
-//	class IBusEngine: public IModule
-//	{
-//	public:
-//		virtual ~IBusEngine(){};
-//		virtual int Initialize(void* arg, int arglen) = 0;
-//		virtual int Activate() = 0;
-//		virtual int Release() = 0;
-//	};
+	class IBusEngine: public IModule
+	{
+	public:
+		virtual int Initialize(void* arg, int arglen) = 0;
+		virtual int Activate() = 0;
+		virtual int Release() = 0;
+
+		virtual int CreateServerNodePort() = 0;
+		virtual int CreateClientNodePort() = 0;
+		virtual int Schedule(bool onlyServer) = 0;
+	};
 
 
 
