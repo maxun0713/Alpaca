@@ -27,12 +27,34 @@ namespace bus
 		size_t      peerIDBufLen;
 	};
 
-	class IServerPortSink
+	class IPortSink
 	{
 	public:
-		virtual ~IServerPortSink(){};
+		virtual ~IPortSink(){};
 
-		void virtual OnRecv(const char* peerNode, void* data, size_t dataLen) = 0;
+		virtual void OnRecv(const char* peerNode, void* data, size_t dataLen) = 0;
+	};
+
+	class INodePort
+	{
+	public:
+		virtual ~INodePort(){};
+
+		virtual int Initialize(void* arg, int arglen) = 0;
+		virtual int Activate() = 0;
+		virtual int Release() = 0;
+
+		virtual int AddPortSink(IPortSink* sink) = 0;
+		virtual int RemovePortSink(IPortSink* sink) = 0;
+
+		virtual int Schedule(bool noWait) = 0;
+
+		virtual void OnRecv(const char* peerNode, void* data, size_t dataLen) = 0;
+
+		virtual int Send(const char* peerNodeID, const char* data,
+		              size_t dataLen) = 0;
+
+		virtual const char* GetLastErrMsg() = 0;
 	};
 
 
@@ -43,12 +65,12 @@ namespace bus
 		virtual int Activate() = 0;
 		virtual int Release() = 0;
 
-		virtual int CreateServerNodePort() = 0;
-		virtual int CreateClientNodePort() = 0;
+		virtual INodePort* CreateServerNodePort(const char* addr, const char* identity,
+				size_t dataBufLen, size_t peerIdBufLen) = 0;
+		virtual INodePort* CreateClientNodePort(const char* addr, const char* identity,
+				size_t dataBufLen, size_t peerIdBufLen) = 0;
 		virtual int Schedule(bool onlyServer) = 0;
 	};
-
-
 
 }
 

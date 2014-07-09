@@ -9,26 +9,37 @@
 #define SERVERNODEPORT_H_
 
 #include "IBusEngine.h"
+#include "LastErrMsg.h"
+#include "ServerNode.h"
 #include <set>
 
 using namespace bus;
 using namespace std;
 
-class ServerNode;
-class ServerNodePort: public IServerPortSink {
+class ServerNodePort : public INodePort {
 public:
 	ServerNodePort();
 	virtual ~ServerNodePort();
 
-	int AddPortSink(IServerPortSink* sink);
-	int RemovePortSink(IServerPortSink* sink);
+	virtual int Initialize(void* arg, int arglen) ;
+	virtual int Activate() ;
+	virtual int Release() ;
 
-	int Initialize(const NodeInitParam& params);
+	virtual int AddPortSink(IPortSink* sink) ;
+	virtual int RemovePortSink(IPortSink* sink) ;
 
-	void virtual OnRecv(const char* peerNode, void* data, size_t dataLen);
+	virtual int Schedule(bool noWait);
+
+	virtual void OnRecv(const char* peerNode, void* data, size_t dataLen);
+
+	virtual int Send(const char* peerNodeID, const char* data,
+	              size_t dataLen) ;
+
+	const char* GetLastErrMsg() ;
 private:
-	ServerNode*  _servNode;
-	set<IServerPortSink*> _portSinkSet;
+	ServerNode  _node;
+	set<IPortSink*> _portSinkSet;
+	LastErrMsg	 _lastErrMsg;
 };
 
 #endif /* SERVERNODEPORT_H_ */

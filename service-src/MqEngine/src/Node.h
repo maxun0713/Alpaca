@@ -8,8 +8,8 @@
 #ifndef NODE_H_
 #define NODE_H_
 
-#include "LastErrMsg.h"
 #include "IBusEngine.h"
+#include "LastErrMsg.h"
 
 using namespace bus;
 
@@ -26,9 +26,12 @@ public:
     int Recv(char* peerNodeID, size_t& peerNodeIDBufLen, void* dataBuf,
              size_t& dataLen, bool noWait);
 
-protected:
-    int _Send(const char* peerNodeID, size_t peerNodeIDLen, const char* data,
+    int Send(const char* peerNodeID, size_t peerNodeIDLen, const char* data,
               size_t dataLen);
+
+    int Schedule(bool noWait);
+
+    int SetNodePort(INodePort* port);
 
 	int _InitLocalData(const NodeInitParam& params);
 protected:
@@ -42,6 +45,8 @@ protected:
 
 	char*      _selfID;
 	size_t     _selfIDLen;
+
+	INodePort* _nodePort;
 };
 
 #endif /* NODE_H_ */

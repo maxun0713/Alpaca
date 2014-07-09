@@ -13,7 +13,7 @@
 
 CNode::CNode() :_socket(NULL), _dataBuf(NULL),
 _dataBufLen(0), _peerNodeIDBuf(NULL), _peerNodeIDBufLen(0),
-_selfID(NULL), _selfIDLen(0)
+_selfID(NULL), _selfIDLen(0),_nodePort(NULL)
 {
     // TODO Auto-generated constructor stub
 }
@@ -69,6 +69,11 @@ int CNode::Recv(char *peerNodeID, size_t &peerNodeIDBufLen,
 		if (errno != EAGAIN)
 		{
 			SET_ERR_MSG(_lastErrMsg, "recv peer node id failed:" << strerror(errno))
+		}
+		else
+		{
+			zmq_msg_close(&zmsg);
+			return 1;
 		}
 		zmq_msg_close(&zmsg);
 		return ret;
@@ -150,7 +155,7 @@ int CNode::Recv(char *peerNodeID, size_t &peerNodeIDBufLen,
 	return 0;
 }
 
-int CNode::_Send(const char *peerNodeID, size_t peerNodeIDLen,
+int CNode::Send(const char *peerNodeID, size_t peerNodeIDLen,
                  const char *data, size_t dataLen)
 {
     int ret = zmq_send(_socket, peerNodeID, peerNodeIDLen,
@@ -200,6 +205,32 @@ int CNode::_Send(const char *peerNodeID, size_t peerNodeIDLen,
     return 0;
 }
 
+
+int CNode::Schedule(bool noWait)
+{
+	int iRet = -1;
+	size_t nodeIdBufLen = _peerNodeIDBufLen;
+	size_t dataBufLen = _dataBufLen;
+	iRet = Recv(_peerNodeIDBuf, nodeIdBufLen, _dataBuf, dataBufLen, noWait);
+
+	if (iRet == 0 && _nodePort != NULL)
+	{
+		_nodePort->OnRecv(_peerNodeIDBuf, _dataBuf, dataBufLen);
+	}
+
+	return iRet;
+}
+
+int CNode::SetNodePort(INodePort *port)
+{
+	if (port == NULL)
+	{
+		return -1;
+	}
+
+	_nodePort = port;
+	return 0;
+}
 
 int CNode::_InitLocalData(const NodeInitParam& params)
 {
