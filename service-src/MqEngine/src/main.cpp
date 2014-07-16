@@ -6,47 +6,36 @@
 //  Copyright (c) 2014年 marv. All rights reserved.
 //
 
-#include "ServerNode.h"
-#include "ClientNode.h"
-#include <zmq.h>
-#include <iostream>
+#include "BusEngine.h"
 #include <assert.h>
 #include <unistd.h>
 #include <stdlib.h>
 using namespace std;
 int main(int argc, const char * argv[])
 {
-    ServerNode serv;
-    ClientNode client;
-    int ret;
-    char peerNodeID[1024];
-    size_t peerNodeIDBufLen = sizeof(peerNodeID);
-    void* dataBuf = malloc(1024);
-    size_t dataLen = 1024;
-    void *context = zmq_ctx_new();
-    if (context == NULL) {
-        return -1;
+	BusEngine busEngine;
+	int ret = busEngine.Initialize(NULL, 0);
+	if (ret != 0)
+	{
+		return -1;
+	}
+
+    INodePort* srvPort = busEngine.CreateServerNodePort("tcp://127.0.0.1:8888", "SERVER", 1000, 256);
+    if (srvPort == NULL)
+    {
+    	return -1;
     }
-    
-    NodeInitParam param;
-    param.addr = "tcp://127.0.0.1:8888";
-    param.context = context;
-    param.identity = "SERVER";
-    
-    ret = serv.Initialize(param);
-    cout << ret << endl;
-    
-    while (1) {
-        ret = serv.Recv(peerNodeID, peerNodeIDBufLen, dataBuf, dataLen, true);
-        if (ret != 0)
-        {
-            //cout << "recv error" << serv.What() << endl;
-            //sleep(1);
-        }
-        peerNodeIDBufLen = 1024;
-        dataLen = 1024;
+
+    while (1)
+    {
+    	ret = busEngine.Schedule(true);
+    	if (ret != 0)
+    	{
+    		cout << busEngine.GetLastErrMsg() << endl;
+    		sleep(2);
+    	}
     }
-    
+
     return 0;
 }
 

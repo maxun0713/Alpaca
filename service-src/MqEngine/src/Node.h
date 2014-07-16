@@ -13,38 +13,37 @@
 
 using namespace bus;
 
-class CNode
-{
+class CNode {
 public:
-    CNode();
-    virtual ~CNode();
+	CNode();
+	virtual ~CNode();
 
-    virtual int Initialize(const NodeInitParam& params) = 0;
+	virtual int Initialize(const NodeInitParam& params) = 0;
 
-    const char* GetLastErrMsg();
-    
-    int Recv(char* peerNodeID, size_t& peerNodeIDBufLen, void* dataBuf,
-             size_t& dataLen, bool noWait);
+	const char* GetLastErrMsg();
 
-    int Send(const char* peerNodeID, size_t peerNodeIDLen, const char* data,
-              size_t dataLen);
+	int Recv(char* peerNodeID, size_t& peerNodeIDBufLen, void* dataBuf,
+			size_t& dataLen, bool noWait);
 
-    int Schedule(bool noWait);
+	int Send(const char* peerNodeID, size_t peerNodeIDLen, const char* data,
+			size_t dataLen);
 
-    int SetNodePort(INodePort* port);
+	int Schedule(bool noWait);
+
+	int SetNodePort(INodePort* port);
 
 	int _InitLocalData(const NodeInitParam& params);
 protected:
-    LastErrMsg _lastErrMsg;
-    void*      _socket;
+	LastErrMsg _lastErrMsg;
+	void* _socket;
 
-	void*	   _dataBuf;
-	size_t     _dataBufLen;
-	char*      _peerNodeIDBuf;
-	size_t     _peerNodeIDBufLen;
+	void* _dataBuf;
+	size_t _dataBufLen;
+	char* _peerNodeIDBuf;
+	size_t _peerNodeIDBufLen;
 
-	char*      _selfID;
-	size_t     _selfIDLen;
+	char* _selfID;
+	size_t _selfIDLen;
 
 	INodePort* _nodePort;
 };

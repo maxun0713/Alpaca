@@ -16,30 +16,29 @@
 using namespace bus;
 using namespace std;
 
-class ServerNodePort : public INodePort {
+class ServerNodePort: public INodePort {
 public:
 	ServerNodePort();
 	virtual ~ServerNodePort();
 
-	virtual int Initialize(void* arg, int arglen) ;
-	virtual int Activate() ;
-	virtual int Release() ;
+	virtual int Initialize(void* arg, int arglen);
+	virtual int Activate();
+	virtual int Release();
 
-	virtual int AddPortSink(IPortSink* sink) ;
-	virtual int RemovePortSink(IPortSink* sink) ;
+	virtual int AddPortSink(IPortSink* sink);
+	virtual int RemovePortSink(IPortSink* sink);
 
 	virtual int Schedule(bool noWait);
 
 	virtual void OnRecv(const char* peerNode, void* data, size_t dataLen);
 
-	virtual int Send(const char* peerNodeID, const char* data,
-	              size_t dataLen) ;
+	virtual int Send(const char* peerNodeID, const char* data, size_t dataLen);
 
-	const char* GetLastErrMsg() ;
+	const char* GetLastErrMsg();
 private:
-	ServerNode  _node;
+	ServerNode _node;
 	set<IPortSink*> _portSinkSet;
-	LastErrMsg	 _lastErrMsg;
+	LastErrMsg _lastErrMsg;
 };
 
 #endif /* SERVERNODEPORT_H_ */

@@ -30,10 +30,13 @@ public:
 
 	virtual int Schedule(bool onlyServer) ;
 
+	const char* GetLastErrMsg();
+
 private:
 	void*   _zmqContext;
 	set<INodePort*>  _srvNodePortSet;
 	set<INodePort*>  _cliNodePortSet;
+	LastErrMsg  _lastErrMsg;
 };
 
 #endif /* BUSENGINE_H_ */
