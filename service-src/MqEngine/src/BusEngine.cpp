@@ -82,6 +82,16 @@ int BusEngine::Release() {
 		return zmq_ctx_destroy(_zmqContext);
 	}
 
+	set<INodePort*>::iterator itor = _srvNodePortSet.begin();
+	for (; itor != _srvNodePortSet.end(); itor++) {
+		delete *itor;
+	}
+
+	itor = _cliNodePortSet.begin();
+	for (; itor != _srvNodePortSet.end(); itor++) {
+		delete *itor;
+	}
+
 	return 0;
 }
 
