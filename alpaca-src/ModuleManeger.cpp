@@ -43,17 +43,6 @@ int ModuleManager::Release()
 		dlclose(*iter);
 	}
 
-	MODULE_ITER modIter = _moduleMap.begin();
-	IModule* mod;
-	for(; modIter != _moduleMap.end(); modIter++)
-	{
-		mod = modIter->second;
-		if(mod)
-		{
-			mod->Release();
-		}
-	}
-
 	return 0;
 }
 
@@ -74,12 +63,6 @@ IModule* ModuleManager::LoadModule(const char* module_name)
 
 IModule* ModuleManager::_Query(const char* mod_name) {
 	T_ERROR_PTR(mod_name)
-
-	MODULE_ITER iter = _moduleMap.find(mod_name);
-	if(iter != _moduleMap.end())
-	{
-		return iter->second;
-	}
 
 	return NULL;
 }
@@ -103,7 +86,6 @@ IModule* ModuleManager::_TryOpen(const char* mod_name) {
 
 	mod = inst();
 	T_ERROR_PTR(mod);
-	_moduleMap.insert(make_pair(mod_name, mod) );
 
 	return mod;
 }

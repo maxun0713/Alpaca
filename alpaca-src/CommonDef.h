@@ -36,5 +36,6 @@
 
 #define T_ERROR_PTR_WITH_DL_ERR_INFO(cond)  T_ASSERT_WITH_DL_ERR_INFO(cond, return NULL)
 
+#define APP_MOD "APP"
 
 #endif /* COMMONDEF_H_ */

@@ -36,9 +36,6 @@ private:
 	IModule* _TryOpen(const char* mod_name);
 private:
 	char _dir[DIR_MAX_LENGTH];
-	typedef map<string, IModule*> MODULE_MAP;
-	typedef MODULE_MAP::iterator MODULE_ITER;
-	MODULE_MAP	_moduleMap;
 	typedef vector<void*> HANDLER_STORAGE;
 	typedef HANDLER_STORAGE::iterator HANDLE_ITER;
 	HANDLER_STORAGE  _handlerStorage;

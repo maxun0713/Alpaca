@@ -7,49 +7,47 @@
 
 #include "LogEngine.h"
 #include "Util.h"
-#include "GateServer.h"
+#include "AppFrame.h"
 #include "CommonDef.h"
 #include <iostream>
 
 using namespace std;
 
-
-int _Run(const char* app, int daemon)
-{
+int _Run(const char* app, int daemon) {
 	T_ERROR_VAL(app)
 
-	if( Lock(app))
-	{
+	if (Lock(app)) {
 		LOG_ERROR("another " << app << " instance is running");
 		return -1;
 	}
 
 	T_ERROR_VAL(SavePid(app) == 0)
 	T_ERROR_VAL(SetSystemParms() == 0)
-	if(daemon)  T_ERROR_VAL(Deamonlize(0, 1) == 0)
+	if (daemon)
+		T_ERROR_VAL(Deamonlize(0, 1) == 0)
 
-	IServer* servFrame = new GateServer();
-	T_ERROR_VAL(servFrame->Initialize(NULL, 0) == 0)
-	T_ERROR_VAL(servFrame->Activate() == 0)
+	AppFrame* appFrame = new AppFrame();
+	if (appFrame == NULL) {
+		LOG_FATAL("create ");
+	}
+
+	T_ERROR_VAL(appFrame->Initialize(NULL, 0) == 0)
+	T_ERROR_VAL(appFrame->Activate() == 0)
 
 	LOG_INFO(app << " is about to run");
 
-	SERVER_STATUS status;
-	do{
-		servFrame->OnTimer();
+	appFrame->Run();
 
-		status = servFrame->OnProc(NULL);
-	}while(status != SERVER_STATUS_SHUTDOWN);
+	appFrame->Release();
 
-	servFrame->Release();
+	delete appFrame;
 
 	UnLock(app);
 
 	return 0;
 }
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 	LogEngine engine;
 	engine.Initialize(argv[0], "/home/marv");
 
