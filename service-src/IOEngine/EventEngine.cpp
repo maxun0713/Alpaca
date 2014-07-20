@@ -7,7 +7,6 @@
 
 #include "EventEngine.h"
 #include "EventCallback.h"
-#include "SessionManager.h"
 #include <stdio.h>
 #include <string.h>
 #include <event2/event.h>
@@ -55,7 +54,6 @@ int EventEngine::Initialize(void* arg, int arglen)
 
 	event_config_free(config);
 
-	_manager = new SessionManager();
 	return 0;
 }
 
@@ -73,10 +71,10 @@ int EventEngine::CreateListener(const char* ip, short port, IOHandler* iohandler
 		return -1;
 	}
 
-	if(!iohandler) iohandler = _manager;
+	_manager = iohandler;
 
 	_evlistener = evconnlistener_new_bind(_evbase,
-			accept_conn_cb, iohandler, LEV_OPT_CLOSE_ON_FREE|LEV_OPT_REUSEABLE, 1024, (struct sockaddr*)&sockaddr, socklen);
+			accept_conn_cb, _manager, LEV_OPT_CLOSE_ON_FREE|LEV_OPT_REUSEABLE, 1024, (struct sockaddr*)&sockaddr, socklen);
 	if(!_evlistener)
 	{
 		SET_ERR_MSG(_lastErrMsg, "allocate listener failed")

@@ -1,0 +1,57 @@
+/*
+ * GameSrv.cpp
+ *
+ *  Created on: Jul 20, 2014
+ *      Author: marv
+ */
+
+#include "GameSrv.h"
+#include "ConfigDef.h"
+#include "CommonDef.h"
+#include "BusEngine/Inc/IBusEngine.h"
+#include "GatePortSink.h"
+#include <string.h>
+
+using namespace bus;
+GameSrv::GameSrv():_busEngine(NULL) {
+
+}
+
+GameSrv::~GameSrv() {
+
+}
+
+int GameSrv::Initialize(void* arg, int arglen) {
+	T_ERROR_VAL(_modManager.Initialize((void*)SERVICE_PATH,
+				strlen(SERVICE_PATH)) == 0)
+
+	_busEngine = (IBusEngine*)_modManager.LoadModule("BusEngine");
+	T_ERROR_VAL(_busEngine)
+	T_ERROR_VAL(_busEngine->Initialize(NULL, 0) == 0)
+
+	return 0;
+}
+
+int GameSrv::Activate() {
+	INodePort* selfNode = _busEngine->CreateServerNodePort(addr, slefID, bufLen, nodeIDBufLen);
+	T_ERROR_VAL(selfNode)
+	T_ERROR_VAL(selfNode->AddPortSink(new GatePortSink()) == 0)
+	T_ERROR_VAL(_busEngine->Activate() == 0)
+
+	return 0;
+}
+
+int GameSrv::Release() {
+	T_ERROR_VAL(_busEngine->Release())
+
+	delete this;
+	return 0;
+}
+
+uint64_t GameSrv::OnTimer() {
+	return 0;
+}
+
+SERVER_STATUS GameSrv::OnProc(void* arg) {
+	return SERVER_STATUS_SHUTDOWN;
+}

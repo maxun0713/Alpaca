@@ -84,12 +84,12 @@ int BusEngine::Release() {
 
 	set<INodePort*>::iterator itor = _srvNodePortSet.begin();
 	for (; itor != _srvNodePortSet.end(); itor++) {
-		delete *itor;
+		(*itor)->Release();
 	}
 
 	itor = _cliNodePortSet.begin();
 	for (; itor != _srvNodePortSet.end(); itor++) {
-		delete *itor;
+		(*itor)->Release();
 	}
 
 	return 0;

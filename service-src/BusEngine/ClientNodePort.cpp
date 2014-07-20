@@ -81,6 +81,7 @@ int ClientNodePort::Release()
 		delete sink;
 	}
 
+	delete this;
 	return 0;
 }
 

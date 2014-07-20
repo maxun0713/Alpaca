@@ -83,6 +83,7 @@ int ServerNodePort::Release()
 		delete sink;
 	}
 
+	delete this;
 	return 0;
 }
 
