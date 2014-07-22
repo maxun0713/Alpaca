@@ -60,6 +60,7 @@ INodePort* BusEngine::CreateClientNodePort(const char *addr,
 	param.identity = identity;
 	param.dataBufLen = dataBufLen;
 	param.peerIdBufLen = peerIdBufLen;
+	param.context = _zmqContext;
 
 	ClientNodePort* p = new ClientNodePort();
 	int ret = p->Initialize(&param, sizeof(param));

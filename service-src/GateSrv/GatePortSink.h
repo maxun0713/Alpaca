@@ -9,7 +9,8 @@
 #define GatePORTSINK_H_
 
 #include "BusEngine/Inc/IBusEngine.h"
-using namespace bus ;
+
+using namespace bus;
 
 class GatePortSink:public bus::IPortSink
 {

@@ -19,7 +19,7 @@ AppFrame::~AppFrame() {
 }
 
 int AppFrame::Initialize(void *arg, int arglen) {
-	T_ERROR_VAL(_modMgr.Initialize(arg, arglen) == 0)
+	T_ERROR_VAL(_modMgr.Initialize((void*)SERVICE_PATHS, strlen(SERVICE_PATHS)) == 0)
 
 	_appMod = static_cast<IServer*> (_modMgr.LoadModule(APP_MOD));
 	T_ERROR_VAL(_appMod != NULL)

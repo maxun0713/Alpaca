@@ -33,9 +33,9 @@ int GameSrv::Initialize(void* arg, int arglen) {
 }
 
 int GameSrv::Activate() {
-	INodePort* selfNode = _busEngine->CreateServerNodePort(addr, slefID, bufLen, nodeIDBufLen);
-	T_ERROR_VAL(selfNode)
-	T_ERROR_VAL(selfNode->AddPortSink(new GatePortSink()) == 0)
+	_portForGate = _busEngine->CreateServerNodePort(addr, slefID, bufLen, nodeIDBufLen);
+	T_ERROR_VAL(_portForGate)
+	T_ERROR_VAL(_portForGate->AddPortSink(new GatePortSink()) == 0)
 	T_ERROR_VAL(_busEngine->Activate() == 0)
 
 	return 0;
@@ -53,5 +53,9 @@ uint64_t GameSrv::OnTimer() {
 }
 
 SERVER_STATUS GameSrv::OnProc(void* arg) {
+	while (1)
+	{
+		int ret = _busEngine->Schedule(true);
+	}
 	return SERVER_STATUS_SHUTDOWN;
 }

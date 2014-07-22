@@ -1,29 +1,29 @@
 /*
- * GameSrv.h
+ * GateServer.h
  *
  *  Created on: Jul 20, 2014
  *      Author: marv
  */
 
-#ifndef GAMESRV_H_
-#define GAMESRV_H_
+#ifndef GATESERVER_H_
+#define GATESERVER_H_
 
 #include "IServer.h"
-#include "IGameSrv.h"
+#include "IGateSrv.h"
 #include "ModuleManager.h"
 
-
+class IEventEngine;
 
 namespace bus {
    class IBusEngine;
    class INodePort;
 };
 
-class GameSrv: public IGameSrv
-{
+
+class GateSrv :public IGateSrv{
 public:
-	GameSrv();
-	virtual ~GameSrv();
+	GateSrv();
+	virtual ~GateSrv();
 
 	virtual int Initialize(void* arg, int arglen) ;
 	virtual int Activate() ;
@@ -32,10 +32,10 @@ public:
 	uint64_t virtual OnTimer() ;
 	SERVER_STATUS virtual OnProc(void* arg);
 private:
+	IEventEngine*   _eventEngine;
+	bus::IBusEngine*     _busEngine;
 	ModuleManager   _modManager;
-	bus::IBusEngine*  _busEngine;
-	bus::INodePort*   _portForGate;
-
+	bus::INodePort* _portToGameSrv;
 };
 
-#endif /* GAMESRV_H_ */
+#endif /* GATESERVER_H_ */

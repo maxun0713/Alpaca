@@ -49,6 +49,7 @@ int ServerNodePort::AddPortSink(IPortSink *sink)
 	}
 
 	_portSinkSet.insert(sink);
+	_node.SetNodePort(this);
 	return 0;
 }
 

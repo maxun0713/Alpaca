@@ -18,7 +18,7 @@ DEPS = $(OBJS:%.o=%.d)
 SHARED := -fPIC --shared
 TARGET_DIR = ../../services
 
-ALL_TARGETS = ../../services/GameSrv.so
+ALL_TARGETS = ../../services/GateSrv.so
 
 all: $(ALL_TARGETS)
 

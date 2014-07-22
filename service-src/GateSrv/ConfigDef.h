@@ -14,7 +14,7 @@ const char* ServerIP = "127.0.0.1";
 const int port = 27017;
 
 const char* addr = "tcp://127.0.0.1:8888";
-const char* slefID = "GameSrv";
+const char* slefID = "GateSrv";
 size_t bufLen = 1000;
 size_t nodeIDBufLen = 256;
 

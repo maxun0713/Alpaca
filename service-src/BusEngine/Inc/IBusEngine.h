@@ -59,7 +59,6 @@ public:
 
 class IBusEngine: public IModule {
 public:
-	IBusEngine(){};
 	virtual ~IBusEngine(){}
 
 	virtual int Initialize(void* arg, int arglen) = 0;

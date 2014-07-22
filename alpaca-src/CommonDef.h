@@ -37,8 +37,10 @@
 #define T_ERROR_PTR_WITH_DL_ERR_INFO(cond)  T_ASSERT_WITH_DL_ERR_INFO(cond, return NULL)
 
 #ifndef GAMESRV
-#define APP_MOD "Gate"
+#define APP_MOD "GateSrv"
 #else
-#define APP_MOD "Game"
+#define APP_MOD "GameSrv"
 #endif
+
+#define SERVICE_PATHS "../services"
 #endif /* COMMONDEF_H_ */

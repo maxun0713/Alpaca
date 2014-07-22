@@ -15,20 +15,20 @@ OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 SRCS = $(OBJS:%.o=%.cpp)
 DEPS = $(OBJS:%.o=%.d)
 
+Gate_TARGETS = ../bin/GateSrv
+Game_TARGETS = ../bin/GameSrv
 
-ALL_TARGETS = ../bin/GateSrv
-
-all: $(ALL_TARGETS)
+all:  $(Game_TARGETS)
 
 -include $(DEPS)
 $(DEPS): %.d: %.cpp
 	@$(CXX) -M $(CXXFLAGS) $< > $@.$$$$; sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; rm -f $@.$$$$
 
 $(OBJS): %.o: %.cpp
-	$(CXX) -c $(CXXFLAGS) $< -o $@
+	$(CXX) -c $(CXXFLAGS) $< -o $@  -DGAMESRV
 
-$(ALL_TARGETS): $(OBJS) $(DEPS)
-	$(CXX) $(OBJS) -o  $@ $(CXXLFLAGS) 
+$(Game_TARGETS): $(OBJS) $(DEPS)
+	$(CXX) $(OBJS) -o  $@ $(CXXLFLAGS) -DGAMESRV
 
 	
 clean:
