@@ -11,7 +11,7 @@
 #include <zmq.h>
 
 BusEngine::BusEngine() :
-		_zmqContext(NULL) {
+	_zmqContext(NULL) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -66,6 +66,7 @@ INodePort* BusEngine::CreateClientNodePort(const char *addr,
 	int ret = p->Initialize(&param, sizeof(param));
 	if (ret != 0) {
 		SET_ERR_MSG(_lastErrMsg, p->GetLastErrMsg())
+		delete p;
 		return 0;
 	} else {
 		_srvNodePortSet.insert(p);
@@ -78,8 +79,7 @@ int BusEngine::Activate() {
 }
 
 int BusEngine::Release() {
-	if (_zmqContext != NULL)
-	{
+	if (_zmqContext != NULL) {
 		return zmq_ctx_destroy(_zmqContext);
 	}
 
@@ -97,15 +97,21 @@ int BusEngine::Release() {
 }
 
 int BusEngine::Schedule(bool onlyServer) {
+	int iRet = -1;
+
 	set<INodePort*>::iterator itor = _srvNodePortSet.begin();
 	for (; itor != _srvNodePortSet.end(); itor++) {
-		(*itor)->Schedule(true);
+		if ((*itor)->Schedule(true) >= 0) {
+			iRet = 0;
+		}
 	}
 
 	if (!onlyServer) {
 		itor = _cliNodePortSet.begin();
 		for (; itor != _cliNodePortSet.end(); itor++) {
-			(*itor)->Schedule(true);
+			if ((*itor)->Schedule(true) >= 0) {
+				iRet = 0;
+			}
 		}
 	}
 

@@ -131,7 +131,7 @@ int CNode::Recv(char *peerNodeID, size_t &peerNodeIDBufLen, void *dataBuf,
 	}
 
 	dataLen = bytes;
-	return 0;
+	return bytes;
 }
 
 int CNode::Send(const char *peerNodeID, size_t peerNodeIDLen, const char *data,
@@ -183,7 +183,7 @@ int CNode::Schedule(bool noWait) {
 	size_t dataBufLen = _dataBufLen;
 	iRet = Recv(_peerNodeIDBuf, nodeIdBufLen, _dataBuf, dataBufLen, noWait);
 
-	if (iRet == 0 && _nodePort != NULL) {
+	if (iRet >= 0 && _nodePort != NULL) {
 		_nodePort->OnRecv(_peerNodeIDBuf, _dataBuf, dataBufLen);
 	}
 
