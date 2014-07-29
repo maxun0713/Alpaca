@@ -25,6 +25,8 @@ public:
 
 	virtual int CreateListener(const char* ip, short port, IOHandler* iohandler);
 
+	virtual struct bufferevent* AddEvent(int fd, IOHandler* iohandler);
+
 private:
 	IOHandler*   		    _manager;
 	struct evconnlistener*  _evlistener;

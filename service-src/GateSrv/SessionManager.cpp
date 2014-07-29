@@ -114,8 +114,7 @@ int SessionManager::OnAcceptConn(struct evconnlistener* event_listener,
 
 	bufferevent_enable(bev, EV_READ|EV_WRITE);
 
-	int fd = bufferevent_getfd(bev);
-	return AddClientSession(fd, bev, addr, len);
+	return AddClientSession(sock, bev, addr, len);
 }
 
 

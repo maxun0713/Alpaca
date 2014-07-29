@@ -20,6 +20,8 @@ public:
 	virtual int Release() = 0;
 
 	virtual int CreateListener(const char* ip, short port, IOHandler* iohandler) = 0;
+
+	virtual struct bufferevent* AddEvent(int fd, IOHandler* iohandler) = 0;
 };
 
 
