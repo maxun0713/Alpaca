@@ -104,7 +104,7 @@ struct bufferevent* EventEngine::AddEvent(int fd, IOHandler *iohandler) {
 		return NULL;
 	}
 
-	bufferevent_setcb(bev, bufevent_read_cb, NULL, bufevent_event_cb, this);
+	bufferevent_setcb(bev, bufevent_read_cb, NULL, bufevent_event_cb, iohandler);
 
 	//short for msg header len
 	bufferevent_setwatermark(bev, EV_READ, sizeof(short), 0);
