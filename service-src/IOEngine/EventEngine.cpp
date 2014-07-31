@@ -61,23 +61,22 @@ int EventEngine::CreateListener(const char* ip, short port,
 	sockaddr.sin_port = htons(port);
 	if (inet_pton(AF_INET, ip, &sockaddr.sin_addr) == 0) //1 for succ, 0 for failure
 	{
-SET_ERR_MSG	(_lastErrMsg, "set sockaddr failed" << strerror(errno))
-	return -1;
-}
+		SET_ERR_MSG	(_lastErrMsg, "set sockaddr failed" << strerror(errno))
+		return -1;
+	}
 
-_manager = iohandler;
+	_manager = iohandler;
 
-_evlistener = evconnlistener_new_bind(_evbase,
+	_evlistener = evconnlistener_new_bind(_evbase,
 		accept_conn_cb, _manager, LEV_OPT_CLOSE_ON_FREE|LEV_OPT_REUSEABLE, 1024, (struct sockaddr*)&sockaddr, socklen);
-if(!_evlistener)
-{
-	SET_ERR_MSG(_lastErrMsg, "allocate listener failed")
-	return -1;
-}
+	if(!_evlistener)
+	{
+		SET_ERR_MSG(_lastErrMsg, "allocate listener failed")
+		return -1;
+	}
 
-evconnlistener_set_error_cb(_evlistener, accept_conn_error_cb);
-
-return 0;
+	evconnlistener_set_error_cb(_evlistener, accept_conn_error_cb);
+	return 0;
 }
 
 int EventEngine::Activate() {
