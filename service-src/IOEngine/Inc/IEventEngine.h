@@ -11,6 +11,7 @@
 
 class IOHandler;
 class IModule;
+
 class IEventEngine : public IModule{
 public:
 	virtual ~IEventEngine() {}
@@ -21,7 +22,7 @@ public:
 
 	virtual int CreateListener(const char* ip, short port, IOHandler* iohandler) = 0;
 
-	virtual struct bufferevent* AddEvent(int fd, IOHandler* iohandler) = 0;
+	virtual int AddEvent(int fd, int flags, event_callback_fn fn, void* arg) = 0;
 };
 
 

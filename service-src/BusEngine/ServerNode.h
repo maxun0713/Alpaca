@@ -10,13 +10,12 @@
 
 #include "Node.h"
 
-class ServerNode: public CNode
-{
+class ServerNode: public CNode {
 public:
-    ServerNode();
-    virtual ~ServerNode();
+	ServerNode();
+	virtual ~ServerNode();
 
-    int  Initialize(const NodeInitParam& params);
+	int Initialize(const NodeInitParam& params);
 
 };
 

@@ -224,3 +224,8 @@ int CNode::_InitLocalData(const NodeInitParam& params) {
 
 	return 0;
 }
+
+int CNode::GetNodeOpt(int option_name, void *&option_value, size_t *&option_len)
+{
+	return zmq_getsockopt(_socket, option_name, option_value, option_len);
+}

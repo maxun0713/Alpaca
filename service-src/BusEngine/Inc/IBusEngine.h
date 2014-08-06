@@ -55,6 +55,8 @@ public:
 			size_t dataLen) = 0;
 
 	virtual const char* GetLastErrMsg() = 0;
+
+	virtual int GetPortOpt(int option_name, void *&option_value, size_t *&option_len) = 0;
 };
 
 class IBusEngine: public IModule {

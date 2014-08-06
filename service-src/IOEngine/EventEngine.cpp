@@ -90,27 +90,20 @@ int EventEngine::Release() {
 	return 0;
 }
 
-struct bufferevent* EventEngine::AddEvent(int fd, IOHandler *iohandler) {
-	if (fd < 0 || iohandler == NULL) {
-		return NULL;
+int EventEngine::AddEvent(int fd, int flags, event_callback_fn fn, void* arg) {
+	if (fd < 0 || fn == NULL) {
+		return -1;
 	}
 
-	struct bufferevent* bev = bufferevent_socket_new(_evbase, fd,
-			BEV_OPT_CLOSE_ON_FREE);
+	struct event *ev = event_new(_evbase, fd, flags, fn,
+	           arg);
 
-	if (bev == NULL) {
-		SET_ERR_MSG(_lastErrMsg, "create bufferevent");
-		return NULL;
+	if (!ev)
+	{
+		return -1;
 	}
 
-	bufferevent_setcb(bev, bufevent_read_cb, NULL, bufevent_event_cb, iohandler);
-
-	//short for msg header len
-	bufferevent_setwatermark(bev, EV_READ, sizeof(short), 0);
-	bufferevent_setwatermark(bev, EV_WRITE, sizeof(short), 0);
-
-	bufferevent_enable(bev, EV_READ | EV_WRITE);
-
-	return bev;
+	event_add(ev, NULL);
+	return 0;
 }
 

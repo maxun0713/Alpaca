@@ -145,3 +145,7 @@ int ServerNodePort::Schedule(bool noWait)
 }
 
 
+int ServerNodePort::GetPortOpt(int option_name, void *&option_value, size_t *&option_len)
+{
+	return _node.GetNodeOpt(option_name, option_value, option_len);
+}

@@ -12,13 +12,16 @@
 #include "CommonDef.h"
 #include "ConfigDef.h"
 #include "GatePortSink.h"
+#include "ExternPortManager.h"
 #include <string.h>
 #include <iostream>
+#include <zmq.h>
 
 using namespace bus;
 using namespace std;
 
-GateSrv::GateSrv():_eventEngine(NULL), _busEngine(NULL),_portToGameSrv(NULL) {
+GateSrv::GateSrv() :
+	_eventEngine(NULL), _busEngine(NULL), _portToGameSrv(NULL) {
 	// TODO Auto-generated constructor stub
 }
 
@@ -26,27 +29,20 @@ GateSrv::~GateSrv() {
 	// TODO Auto-generated destructor stub
 }
 
-uint64_t GateSrv::OnTimer()
-{
+uint64_t GateSrv::OnTimer() {
 	return 0;
 }
 
-
-
-SERVER_STATUS GateSrv::OnProc(void *arg)
-{
-	while (1)
-	{
-		cout << _portToGameSrv->Send("GameSrv", "Hello", strlen("Hello")) << endl;
+SERVER_STATUS GateSrv::OnProc(void *arg) {
+	while (1) {
+		cout << _portToGameSrv->Send("GameSrv", "Hello", strlen("Hello"))
+				<< endl;
 		sleep(5);
 	}
 	return SERVER_STATUS_SHUTDOWN;
 }
 
-
-
-int GateSrv::Release()
-{
+int GateSrv::Release() {
 	T_ERROR_VAL(_busEngine->Release() == 0)
 	T_ERROR_VAL(_eventEngine->Release() == 0)
 
@@ -54,35 +50,35 @@ int GateSrv::Release()
 	return 0;
 }
 
+int GateSrv::Activate() {
 
-
-int GateSrv::Activate()
-{
-	_portToGameSrv = _busEngine->CreateClientNodePort(addr, slefID, bufLen, nodeIDBufLen);
-	T_ERROR_VAL(_portToGameSrv)
-	T_ERROR_VAL(_portToGameSrv->AddPortSink(new GatePortSink()) == 0)
 	T_ERROR_VAL(_busEngine->Activate() == 0)
 
-	//T_ERROR_VAL(_eventEngine->Activate() == 0)
 	return 0;
 }
 
-
-
-int GateSrv::Initialize(void *arg, int arglen)
-{
+int GateSrv::Initialize(void *arg, int arglen) {
 	T_ERROR_VAL(_modManager.Initialize((void*)SERVICE_PATH,
-			strlen(SERVICE_PATH)) == 0)
-	_eventEngine = (IEventEngine*)_modManager.LoadModule("IOEngine");
+					strlen(SERVICE_PATH)) == 0)
+	_eventEngine = (IEventEngine*) _modManager.LoadModule("IOEngine");
 	T_ERROR_VAL(_eventEngine)
 	T_ERROR_VAL(_eventEngine->Initialize(NULL, 0) == 0);
 	T_ERROR_VAL(_eventEngine->CreateListener(ServerIP, port, new SessionManager()) == 0)
 
-	_busEngine = (IBusEngine*)_modManager.LoadModule("BusEngine");
+	_busEngine = (IBusEngine*) _modManager.LoadModule("BusEngine");
 	T_ERROR_VAL(_busEngine)
 	T_ERROR_VAL(_busEngine->Initialize(NULL, 0) == 0)
 
+	_portToGameSrv = _busEngine->CreateClientNodePort(addr, slefID, bufLen, nodeIDBufLen);
+	T_ERROR_VAL(_portToGameSrv)
+	T_ERROR_VAL(_portToGameSrv->AddPortSink(new GatePortSink()) == 0)
+
+	int32_t portFd;
+	size_t  portFdSize = sizeof(portFd);
+	T_ERROR_VAL(_portToGameSrv->GetPortOpt(ZMQ_FD, static_cast<void*>(&portFd) ,&portFdSize) == 0)
+	T_ERROR_VAL(portFd > 0)
+	T_ERROR_VAL(_eventEngine->AddEvent(portFd, EV_READ|EV_PERSIST, NULL, NULL))
+
 	return 0;
 }
-
 

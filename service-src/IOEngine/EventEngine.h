@@ -8,8 +8,11 @@
 #ifndef EVENTENGINE_H_
 #define EVENTENGINE_H_
 
+#include <event2/util.h>
+#include <event2/event.h>
 #include "IModule.h"
 #include "IEventEngine.h"
+
 
 struct evconnlistener;
 struct event_base;
@@ -25,7 +28,7 @@ public:
 
 	virtual int CreateListener(const char* ip, short port, IOHandler* iohandler);
 
-	virtual struct bufferevent* AddEvent(int fd, IOHandler* iohandler);
+	virtual int AddEvent(int fd, int flags, event_callback_fn fn, void* arg);
 
 private:
 	IOHandler*   		    _manager;

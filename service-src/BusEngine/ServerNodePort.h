@@ -35,6 +35,8 @@ public:
 	virtual int Send(const char* peerNodeID, const char* data, size_t dataLen);
 
 	const char* GetLastErrMsg();
+
+	virtual int GetPortOpt(int option_name, void *&option_value, size_t *&option_len);
 private:
 	ServerNode _node;
 	set<IPortSink*> _portSinkSet;

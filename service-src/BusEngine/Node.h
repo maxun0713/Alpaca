@@ -32,7 +32,10 @@ public:
 
 	int SetNodePort(INodePort* port);
 
+	int GetNodeOpt(int option_name, void *&option_value, size_t *&option_len);
+protected:
 	int _InitLocalData(const NodeInitParam& params);
+
 protected:
 	LastErrMsg _lastErrMsg;
 	void* _socket;
