@@ -8,7 +8,7 @@
 #ifndef CONFIGDEF_H_
 #define CONFIGDEF_H_
 
-#define SERVICE_PATH "../services"
+#define SERVICE_PATH "/home/marv/Alpaca/services"
 
 const char* ServerIP = "127.0.0.1";
 const int port = 27017;

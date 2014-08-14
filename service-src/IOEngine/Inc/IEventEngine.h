@@ -7,7 +7,7 @@
 
 #ifndef IEVENTENGINE_H_
 #define IEVENTENGINE_H_
-
+#include <event2/event.h>
 
 class IOHandler;
 class IModule;

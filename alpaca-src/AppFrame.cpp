@@ -7,6 +7,7 @@
 
 #include "AppFrame.h"
 #include "CommonDef.h"
+#include "DefaultConfig.h"
 
 AppFrame::AppFrame() :
 	_appMod(NULL) {
@@ -19,7 +20,7 @@ AppFrame::~AppFrame() {
 }
 
 int AppFrame::Initialize(void *arg, int arglen) {
-	T_ERROR_VAL(_modMgr.Initialize((void*)SERVICE_PATHS, strlen(SERVICE_PATHS)) == 0)
+	T_ERROR_VAL(_modMgr.Initialize((void*)FRAME_SERVICE_PATH, strlen(FRAME_SERVICE_PATH)) == 0)
 
 	_appMod = static_cast<IServer*> (_modMgr.LoadModule(APP_MOD));
 	T_ERROR_VAL(_appMod != NULL)

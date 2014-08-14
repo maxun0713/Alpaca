@@ -63,7 +63,7 @@ int GateSrv::Initialize(void *arg, int arglen) {
 	_eventEngine = (IEventEngine*) _modManager.LoadModule("IOEngine");
 	T_ERROR_VAL(_eventEngine)
 	T_ERROR_VAL(_eventEngine->Initialize(NULL, 0) == 0);
-	T_ERROR_VAL(_eventEngine->CreateListener(ServerIP, port, new SessionManager()) == 0)
+	T_ERROR_VAL(_eventEngine->CreateListener(ServerIP, port + 1, new SessionManager()) == 0)
 
 	_busEngine = (IBusEngine*) _modManager.LoadModule("BusEngine");
 	T_ERROR_VAL(_busEngine)
@@ -74,8 +74,10 @@ int GateSrv::Initialize(void *arg, int arglen) {
 	T_ERROR_VAL(_portToGameSrv->AddPortSink(new GatePortSink()) == 0)
 
 	int32_t portFd;
+	void *pPortFd = static_cast<void*>(&portFd);
 	size_t  portFdSize = sizeof(portFd);
-	T_ERROR_VAL(_portToGameSrv->GetPortOpt(ZMQ_FD, static_cast<void*>(&portFd) ,&portFdSize) == 0)
+	size_t *pPortFdSize = &portFdSize;
+	T_ERROR_VAL(_portToGameSrv->GetPortOpt(ZMQ_FD, pPortFd , pPortFdSize) == 0)
 	T_ERROR_VAL(portFd > 0)
 	T_ERROR_VAL(_eventEngine->AddEvent(portFd, EV_READ|EV_PERSIST, NULL, NULL))
 

@@ -61,7 +61,7 @@ int CNode::Recv(char *peerNodeID, size_t &peerNodeIDBufLen, void *dataBuf,
 					"recv peer node id failed:" << strerror(errno))
 		} else {
 			zmq_msg_close(&zmsg);
-			return 1;
+			return -1;
 		}
 		zmq_msg_close(&zmsg);
 		return ret;
