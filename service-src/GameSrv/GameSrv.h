@@ -11,30 +11,33 @@
 #include "IServer.h"
 #include "IGameSrv.h"
 #include "ModuleManager.h"
+#include "MsgCoder/Inc/IMsgCoder.h"
 
-
-
+class IMsgCoder;
 namespace bus {
-   class IBusEngine;
-   class INodePort;
-};
+class IBusEngine;
+class INodePort;
+}
+;
 
-class GameSrv: public IGameSrv
-{
+class GameSrv: public IGameSrv {
 public:
 	GameSrv();
 	virtual ~GameSrv();
 
-	virtual int Initialize(void* arg, int arglen) ;
-	virtual int Activate() ;
-	virtual int Release() ;
+	virtual int Initialize(void* arg, int arglen);
+	virtual int Activate();
+	virtual int Release();
 
-	uint64_t virtual OnTimer() ;
+	uint64_t virtual OnTimer();
 	SERVER_STATUS virtual OnProc(void* arg);
+
+	static IMsgCoder* _msgCoder;
 private:
-	ModuleManager   _modManager;
-	bus::IBusEngine*  _busEngine;
-	bus::INodePort*   _portForGate;
+	ModuleManager _modManager;
+	bus::IBusEngine* _busEngine;
+	bus::INodePort* _portForGate;
+
 
 };
 

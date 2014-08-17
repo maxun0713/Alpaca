@@ -8,20 +8,24 @@
 #include "GateSrv.h"
 #include "IOEngine/Inc/IEventEngine.h"
 #include "BusEngine/Inc/IBusEngine.h"
+#include "MsgCoder/Inc/IMsgCoder.h"
 #include "SessionManager.h"
 #include "CommonDef.h"
 #include "ConfigDef.h"
-#include "GatePortSink.h"
+#include "GamePortSink.h"
 #include "ExternPortManager.h"
 #include <string.h>
 #include <iostream>
 #include <zmq.h>
+#include "Message.pb.h"
+
 
 using namespace bus;
 using namespace std;
 
 GateSrv::GateSrv() :
-	_eventEngine(NULL), _busEngine(NULL), _portToGameSrv(NULL) {
+	_eventEngine(NULL), _busEngine(NULL), _portToGameSrv(NULL),
+	_lastConnTime(0), _msgCoder(NULL) {
 	// TODO Auto-generated constructor stub
 }
 
@@ -35,25 +39,42 @@ uint64_t GateSrv::OnTimer() {
 
 SERVER_STATUS GateSrv::OnProc(void *arg) {
 	while (1) {
-		cout << _portToGameSrv->Send("GameSrv", "Hello", strlen("Hello"))
-				<< endl;
+		HeartBeat();
+
 		sleep(5);
 	}
 	return SERVER_STATUS_SHUTDOWN;
 }
 
+int GateSrv::HeartBeat()
+{
+	cout << "Heartbeat" << endl;
+	time_t now = time(NULL);
+	if (now - _lastConnTime > 60)
+	{
+		int iRet ;
+		char buf[1024] = {0};
+		char* pBuf = buf;
+		int bufLen = sizeof(buf);
+		MSG_HeartBeat_SYN msg;
+		iRet = _msgCoder->EncodeMsgBody(HEARTBEAT_SYN, &msg, pBuf, bufLen);
+		return _portToGameSrv->Send("GameSrv", pBuf, bufLen);
+	}
+	return 1;
+}
+
 int GateSrv::Release() {
 	T_ERROR_VAL(_busEngine->Release() == 0)
 	T_ERROR_VAL(_eventEngine->Release() == 0)
+	T_ERROR_VAL(_msgCoder->Release() == 0)
 
 	delete this;
 	return 0;
 }
 
 int GateSrv::Activate() {
-
 	T_ERROR_VAL(_busEngine->Activate() == 0)
-
+	T_ERROR_VAL(_msgCoder->Activate() == 0)
 	return 0;
 }
 
@@ -71,7 +92,7 @@ int GateSrv::Initialize(void *arg, int arglen) {
 
 	_portToGameSrv = _busEngine->CreateClientNodePort(addr, slefID, bufLen, nodeIDBufLen);
 	T_ERROR_VAL(_portToGameSrv)
-	T_ERROR_VAL(_portToGameSrv->AddPortSink(new GatePortSink()) == 0)
+	T_ERROR_VAL(_portToGameSrv->AddPortSink(new GamePortSink()) == 0)
 
 	int32_t portFd;
 	void *pPortFd = static_cast<void*>(&portFd);
@@ -80,6 +101,10 @@ int GateSrv::Initialize(void *arg, int arglen) {
 	T_ERROR_VAL(_portToGameSrv->GetPortOpt(ZMQ_FD, pPortFd , pPortFdSize) == 0)
 	T_ERROR_VAL(portFd > 0)
 	T_ERROR_VAL(_eventEngine->AddEvent(portFd, EV_READ|EV_PERSIST, NULL, NULL))
+
+	_msgCoder = (IMsgCoder*)_modManager.LoadModule("MsgCoder");
+	T_ERROR_VAL(_msgCoder)
+	T_ERROR_VAL(_msgCoder->Initialize(NULL, 0))
 
 	return 0;
 }

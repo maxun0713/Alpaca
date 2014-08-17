@@ -8,22 +8,28 @@
 #include "BusEngine/Inc/IBusEngine.h"
 #include <iostream>
 #include <string.h>
+#include "GameSrv.h"
+#include "Message.pb.h"
 using namespace bus;
 using namespace std;
 
-GatePortSink::GatePortSink()
-{
+GatePortSink::GatePortSink() {
 }
 
-
-
-GatePortSink::~GatePortSink()
-{
+GatePortSink::~GatePortSink() {
 }
 
+void GatePortSink::OnRecv(const char *peerNode, void *data, size_t dataLen) {
+	cout << "recv msg from " << peerNode << endl;
+	uint32_t msgid = 99;
+	char *pBuf = (char*)data;
+	int bufLen = dataLen;
+	MSG_HeartBeat_ACK ack;
+	int iRet = GameSrv::_msgCoder->DecodeMsgBody(msgid, &ack, pBuf, bufLen);
+	if (iRet == 0) {
+		cout << msgid << endl;
+	} else {
+		cout << "decode failed" << endl;
+	}
 
-
-void GatePortSink::OnRecv(const char *peerNode, void *data, size_t dataLen)
-{
-	cout << peerNode[0] << peerNode[1] << peerNode[2] << endl;
 }

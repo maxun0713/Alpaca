@@ -13,6 +13,7 @@
 #include "ModuleManager.h"
 
 class IEventEngine;
+class IMsgCoder;
 
 namespace bus {
    class IBusEngine;
@@ -31,11 +32,18 @@ public:
 
 	uint64_t virtual OnTimer() ;
 	SERVER_STATUS virtual OnProc(void* arg);
+
+	int HeartBeat();
 private:
-	IEventEngine*   _eventEngine;
+	ModuleManager        _modManager;
+
+	IEventEngine*        _eventEngine;
+
 	bus::IBusEngine*     _busEngine;
-	ModuleManager   _modManager;
-	bus::INodePort* _portToGameSrv;
+	bus::INodePort*      _portToGameSrv;
+	time_t               _lastConnTime;
+
+	IMsgCoder*           _msgCoder;
 };
 
 #endif /* GATESERVER_H_ */

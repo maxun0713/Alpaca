@@ -8,27 +8,26 @@
 #ifndef MSGCODER_H_
 #define MSGCODER_H_
 
-#include "LastErrMsg.h"
+#include "BaseMsgCoder.h"
 #include <google/protobuf/message.h>
 
-class MsgCoder {
+class MsgCoder: public BaseMsgCoder {
 public:
 	MsgCoder();
 	virtual ~MsgCoder();
 
-	int EncodeMsgBody(uint32_t msgID, google::protobuf::Message* msg, char*&buf, int& bufLen);
-	int DecodeMsgBody(uint32_t& msgID, google::protobuf::Message*& msg, char*&buf, int& bufLen);
+	virtual int Initialize(void* arg, int arglen);
+	virtual int Activate();
+	virtual int Release();
 
-	int EncodeInt(uint32_t value, char*& buf, int& bufLen);
-	int DecodeInt(uint32_t& value, char*& buf, int& bufLen);
-
-	int EncodeShort(uint16_t value, char*& buf, int& bufLen);
-	int DecodeShort(uint16_t& value, char*& buf, int& bufLen);
+	int EncodeMsgBody(uint32_t msgID, google::protobuf::Message* msg,
+			char*&buf, int& bufLen);
+	int DecodeMsgBody(uint32_t& msgID, google::protobuf::Message* msg,
+			char*&buf, int& bufLen);
 
 private:
 	LastErrMsg _lastErrMsg;
 
 };
-
 
 #endif /* MSGCODER_H_ */
