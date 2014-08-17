@@ -30,9 +30,6 @@ int GameSrv::Initialize(void* arg, int arglen) {
 	T_ERROR_VAL(_busEngine)
 	T_ERROR_VAL(_busEngine->Initialize(NULL, 0) == 0)
 
-	_msgCoder = (IMsgCoder*)_modManager.LoadModule("MsgCoder");
-	T_ERROR_VAL(_msgCoder)
-	T_ERROR_VAL(_msgCoder->Initialize(NULL, 0) == 0)
 
 	return 0;
 }
@@ -43,13 +40,11 @@ int GameSrv::Activate() {
 	T_ERROR_VAL(_portForGate->AddPortSink(new GatePortSink()) == 0)
 	T_ERROR_VAL(_busEngine->Activate() == 0)
 
-	T_ERROR_VAL(_msgCoder->Activate() == 0)
 	return 0;
 }
 
 int GameSrv::Release() {
 	T_ERROR_VAL(_busEngine->Release() == 0)
-	T_ERROR_VAL(_msgCoder->Release() == 0)
 	delete this;
 	return 0;
 }

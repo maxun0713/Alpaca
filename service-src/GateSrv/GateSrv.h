@@ -13,7 +13,6 @@
 #include "ModuleManager.h"
 
 class IEventEngine;
-class IMsgCoder;
 
 namespace bus {
    class IBusEngine;
@@ -43,7 +42,6 @@ private:
 	bus::INodePort*      _portToGameSrv;
 	time_t               _lastConnTime;
 
-	IMsgCoder*           _msgCoder;
 };
 
 #endif /* GATESERVER_H_ */

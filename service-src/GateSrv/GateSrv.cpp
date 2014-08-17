@@ -8,7 +8,6 @@
 #include "GateSrv.h"
 #include "IOEngine/Inc/IEventEngine.h"
 #include "BusEngine/Inc/IBusEngine.h"
-#include "MsgCoder/Inc/IMsgCoder.h"
 #include "SessionManager.h"
 #include "CommonDef.h"
 #include "ConfigDef.h"
@@ -18,14 +17,14 @@
 #include <iostream>
 #include <zmq.h>
 #include "Message.pb.h"
-
+#include "MsgCoder.h"
 
 using namespace bus;
 using namespace std;
 
 GateSrv::GateSrv() :
 	_eventEngine(NULL), _busEngine(NULL), _portToGameSrv(NULL),
-	_lastConnTime(0), _msgCoder(NULL) {
+			_lastConnTime(0) {
 	// TODO Auto-generated constructor stub
 }
 
@@ -46,18 +45,17 @@ SERVER_STATUS GateSrv::OnProc(void *arg) {
 	return SERVER_STATUS_SHUTDOWN;
 }
 
-int GateSrv::HeartBeat()
-{
+int GateSrv::HeartBeat() {
 	cout << "Heartbeat" << endl;
 	time_t now = time(NULL);
-	if (now - _lastConnTime > 60)
-	{
-		int iRet ;
-		char buf[1024] = {0};
+	if (now - _lastConnTime > 60) {
+		int iRet;
+		char buf[1024] = { 0 };
 		char* pBuf = buf;
 		int bufLen = sizeof(buf);
 		MSG_HeartBeat_SYN msg;
-		iRet = _msgCoder->EncodeMsgBody(HEARTBEAT_SYN, &msg, pBuf, bufLen);
+		MsgCoder coder;
+		iRet = coder.EncodeMsgBody(HEARTBEAT_SYN, &msg, pBuf, bufLen);
 		return _portToGameSrv->Send("GameSrv", pBuf, bufLen);
 	}
 	return 1;
@@ -66,7 +64,6 @@ int GateSrv::HeartBeat()
 int GateSrv::Release() {
 	T_ERROR_VAL(_busEngine->Release() == 0)
 	T_ERROR_VAL(_eventEngine->Release() == 0)
-	T_ERROR_VAL(_msgCoder->Release() == 0)
 
 	delete this;
 	return 0;
@@ -74,7 +71,6 @@ int GateSrv::Release() {
 
 int GateSrv::Activate() {
 	T_ERROR_VAL(_busEngine->Activate() == 0)
-	T_ERROR_VAL(_msgCoder->Activate() == 0)
 	return 0;
 }
 
@@ -90,21 +86,18 @@ int GateSrv::Initialize(void *arg, int arglen) {
 	T_ERROR_VAL(_busEngine)
 	T_ERROR_VAL(_busEngine->Initialize(NULL, 0) == 0)
 
-	_portToGameSrv = _busEngine->CreateClientNodePort(addr, slefID, bufLen, nodeIDBufLen);
+	_portToGameSrv = _busEngine->CreateClientNodePort(addr, slefID, bufLen,
+			nodeIDBufLen);
 	T_ERROR_VAL(_portToGameSrv)
 	T_ERROR_VAL(_portToGameSrv->AddPortSink(new GamePortSink()) == 0)
 
 	int32_t portFd;
-	void *pPortFd = static_cast<void*>(&portFd);
-	size_t  portFdSize = sizeof(portFd);
+	void *pPortFd = static_cast<void*> (&portFd);
+	size_t portFdSize = sizeof(portFd);
 	size_t *pPortFdSize = &portFdSize;
 	T_ERROR_VAL(_portToGameSrv->GetPortOpt(ZMQ_FD, pPortFd , pPortFdSize) == 0)
 	T_ERROR_VAL(portFd > 0)
 	T_ERROR_VAL(_eventEngine->AddEvent(portFd, EV_READ|EV_PERSIST, NULL, NULL))
-
-	_msgCoder = (IMsgCoder*)_modManager.LoadModule("MsgCoder");
-	T_ERROR_VAL(_msgCoder)
-	T_ERROR_VAL(_msgCoder->Initialize(NULL, 0))
 
 	return 0;
 }
