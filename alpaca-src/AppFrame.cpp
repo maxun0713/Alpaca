@@ -12,7 +12,6 @@
 AppFrame::AppFrame() :
 	_appMod(NULL) {
 	// TODO Auto-generated constructor stub
-
 }
 
 AppFrame::~AppFrame() {

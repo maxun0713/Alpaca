@@ -4,10 +4,10 @@ CXX = g++
 # debug
 ifdef RELEASE
 CXXFLAGS =  -g  -I../../include -I../../alpaca-src -IInc -O3 -fPIC
-CXXLFLAGS =  -g -Wall  -lglog -ldl -lzmq -rdynamic
+CXXLFLAGS =  -g -Wall  -lglog -ldl -lprotobuf -lzmq -rdynamic
 else
 CXXFLAGS =  -g  -I../../include -I../../alpaca-src -I../../service-src  -IInc -O0 -fPIC
-CXXLFLAGS =  -g -Wall  -lglog -ldl -lzmq -rdynamic
+CXXLFLAGS =  -g -Wall  -lglog -ldl -lprotobuf  -lzmq -rdynamic
 endif
 
 OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))

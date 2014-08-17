@@ -5,10 +5,10 @@ CXX = g++
 # debug
 ifdef RELEASE
 CXXFLAGS =  -g  -I../include  -I../service-src -I. -O3
-CXXLFLAGS =  -g -Wall  -lglog -ldl  -rdynamic
+CXXLFLAGS =  -g -Wall  -lglog -lprotobuf -ldl  -rdynamic
 else
 CXXFLAGS =  -g  -I../include -I../service-src -I. -O0
-CXXLFLAGS =  -g -Wall   -lglog -ldl  -rdynamic
+CXXLFLAGS =  -g -Wall   -lglog -lprotobuf -ldl  -rdynamic
 endif
 
 OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
