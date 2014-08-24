@@ -3,18 +3,20 @@
 CXX = g++
 # debug
 ifdef RELEASE
-CXXFLAGS =  -g  -I../../include -I../../alpaca-src -IInc -O3 -fPIC
+CXXFLAGS =  -g  -I../include -I../../alpaca-src -IInc -O3 -fPIC
 CXXLFLAGS =  -g -Wall  -lglog -ldl -lprotobuf -lzmq -rdynamic
 else
-CXXFLAGS =  -g   -O0 -fPIC -I../include -Iinclude
-CXXLFLAGS =  -g -Wall  -lglog -ldl -lprotobuf -lzmq -rdynamic -ltinyxml -L../lib
+CXXFLAGS =  -g  -I../include -I../alpaca-src/include -O0 
+CXXLFLAGS =  -g -Wall  -L../lib -L../alpaca-src  -lalpaca -ltinyxml -ldl -lglog -lzmq -lprotobuf -levent  -rdynamic
 endif
 
 OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 SRCS = $(OBJS:%.o=%.cpp)
 DEPS = $(OBJS:%.o=%.d)
 
-ALL_TARGETS = libalpaca.a
+TARGET_DIR = ../../services
+
+ALL_TARGETS = GameSrv
 
 all: $(ALL_TARGETS)
 
@@ -23,10 +25,10 @@ $(DEPS): %.d: %.cpp
 	@$(CXX) -M $(CXXFLAGS) $< > $@.$$$$; sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; rm -f $@.$$$$
 
 $(OBJS): %.o: %.cpp
-	$(CXX) -c $(CXXFLAGS) $< -o $@
+	$(CXX)  -c $(CXXFLAGS) $< -o $@
 
 $(ALL_TARGETS): $(OBJS) $(DEPS)
-	@ar cru $(ALL_TARGETS) $(OBJS)  
-	@ranlib $(ALL_TARGETS)
+	$(CXX)  $(OBJS) -o  $@ $(CXXLFLAGS) 
+	
 clean:
 	@rm -rf $(OBJS) $(ALL_TARGETS) $(DEPS)

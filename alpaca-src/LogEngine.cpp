@@ -12,7 +12,7 @@
 #include <iostream>
 
 using namespace std;
-
+namespace alpaca {
 void SignalHandler(const char* data, int size)
 {
 	LOG_ERROR(string(data, size));
@@ -53,4 +53,5 @@ int LogEngine::Initialize(const char* app, const char* logDir)
 	google::InstallFailureSignalHandler();
 	google::InstallFailureWriter(SignalHandler);
 	return 0;
+}
 }
