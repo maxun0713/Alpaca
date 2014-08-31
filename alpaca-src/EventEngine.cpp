@@ -13,19 +13,26 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <errno.h>
+#include <assert.h>
 
 namespace alpaca {
 EventEngine::EventEngine() :
-	_manager(NULL), _evlistener(NULL), _evbase(NULL) {
-	// TODO Auto-generated constructor stub
-
+	_manager(NULL), _evlistener(NULL), _evbase(NULL) , _cycle(0){
 }
 
 EventEngine::~EventEngine() {
-	// TODO Auto-generated destructor stub
 }
 
 int EventEngine::Initialize(void* arg, int arglen) {
+    if(arg == NULL || arglen != sizeof(St_EvEngineInitParam)){
+        SET_ERR_MSG(_lastErrMsg, "init param");
+        return -1;
+    }
+
+    St_EvEngineInitParam* pParam = static_cast<St_EvEngineInitParam*>(arg);
+    _cycle = pParam->cycle;
+    assert(_cycle > 0);
+
 	struct event_config* config = event_config_new();
 	if (!config) {
 		SET_ERR_MSG(_lastErrMsg, "allocate event_config failed");
@@ -78,7 +85,11 @@ int EventEngine::CreateListener(const char* ip, short port,
 }
 
 int EventEngine::Activate() {
-	return event_base_dispatch(_evbase);
+    struct timeval tv;
+    tv.tv_sec = _cycle / 1000;
+    tv.tv_usec = (_cycle % 1000) * 1000;
+	event_base_loopexit(_evbase, &tv);
+    return event_base_dispatch(_evbase);
 }
 
 int EventEngine::Release() {

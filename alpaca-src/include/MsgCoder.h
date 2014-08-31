@@ -28,7 +28,7 @@ public:
 
 	int EncodeMsgBody(uint32_t msgID, google::protobuf::Message* msg,
 			char*&buf, int& bufLen);
-	int DecodeMsgBody(uint32_t& msgID, google::protobuf::Message* msg,
+	int DecodeMsgBody(uint32_t& msgID,
 			char*&buf, int& bufLen);
 
 private:

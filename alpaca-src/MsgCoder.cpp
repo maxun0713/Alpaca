@@ -15,7 +15,6 @@ MsgCoder::MsgCoder() {
 }
 
 MsgCoder::~MsgCoder() {
-	// TODO Auto-generated destructor stub
 }
 
 int MsgCoder::EncodeMsgBody(uint32_t msgID, google::protobuf::Message* msg,
@@ -45,7 +44,7 @@ int MsgCoder::EncodeMsgBody(uint32_t msgID, google::protobuf::Message* msg,
 	return succ ? 0 : -1;
 }
 
-int MsgCoder::DecodeMsgBody(uint32_t& msgID, google::protobuf::Message* msg,
+int MsgCoder::DecodeMsgBody(uint32_t& msgID,
 		char*& buf, int& bufLen) {
 	uint16_t packLen;
 	if (DecodeUShort(packLen, buf, bufLen))
@@ -53,9 +52,7 @@ int MsgCoder::DecodeMsgBody(uint32_t& msgID, google::protobuf::Message* msg,
 	if (DecodeUInt(msgID, buf, bufLen))
 		return -2;
 
-	bool succ = msg->ParseFromArray(buf, bufLen);
-
-	return succ ? 0 : -3;
+	return 0 ;
 }
 
 int MsgCoder::EncodeInt(int32_t value, char *& buf, int & bufLen) {

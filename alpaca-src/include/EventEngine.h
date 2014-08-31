@@ -14,6 +14,11 @@
 #include "IOHandler.h"
 
 namespace alpaca {
+
+typedef struct {
+    time_t   cycle;
+} St_EvEngineInitParam;
+
 class EventEngine: public IModule {
 public:
 	EventEngine();
@@ -32,6 +37,8 @@ private:
 	IOHandler* _manager;
 	struct evconnlistener* _evlistener;
 	struct event_base* _evbase;
+
+    time_t  _cycle;
 
 };
 }
