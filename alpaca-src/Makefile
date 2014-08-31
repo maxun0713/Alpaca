@@ -14,7 +14,7 @@ OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 SRCS = $(OBJS:%.o=%.cpp)
 DEPS = $(OBJS:%.o=%.d)
 
-ALL_TARGETS = libalpaca.a
+ALL_TARGETS = ../lib/libalpaca.a
 
 all: $(ALL_TARGETS)
 
